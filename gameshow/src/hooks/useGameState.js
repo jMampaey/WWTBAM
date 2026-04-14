@@ -1,6 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { parseMarkdown } from '../utils/parseMarkdown';
 
+// Vite reads this glob at build time.
+// Any .md file you add to src/questions/ is picked up automatically.
+const RAW_FILES = import.meta.glob('../questions/*.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+function loadQuestionsFromGlob() {
+  const parsed = Object.entries(RAW_FILES).map(([path, text]) => {
+    const filename = path.split('/').pop();
+    return parseMarkdown(filename, text);
+  });
+
+  const valid = parsed.filter(
+    p => p.question && p.correct && Object.keys(p.options).length >= 2
+  );
+
+  valid.sort((a, b) => a.id.localeCompare(b.id));
+  return valid;
+}
+
 export function useGameState() {
   const [screen,       setScreen]       = useState('setup');
   const [questions,    setQuestions]    = useState([]);
@@ -19,6 +41,11 @@ export function useGameState() {
   const timerRef = useRef(null);
 
   const q = questions[qIdx] ?? null;
+
+  // Load questions once on mount
+  useEffect(() => {
+    setQuestions(loadQuestionsFromGlob());
+  }, []);
 
   // ── Timer ──────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -48,7 +75,6 @@ export function useGameState() {
     const handler = e => {
       const k = e.key.toUpperCase();
 
-      // A/B/C/D — select answer
       if (['A','B','C','D'].includes(k) && phase === 'playing') {
         if (q?.options[k] && !eliminated.includes(k)) {
           setSelected(k);
@@ -57,7 +83,6 @@ export function useGameState() {
         }
       }
 
-      // Enter / Space — advance
       if ((k === 'ENTER' || e.key === ' ') && e.target.tagName !== 'BUTTON') {
         e.preventDefault();
         if (phase === 'selected' || phase === 'timeout') _reveal();
@@ -103,18 +128,6 @@ export function useGameState() {
   }
 
   // ── Public actions ─────────────────────────────────────────────────────────
-  async function loadFiles(files) {
-    const mdFiles = Array.from(files).filter(f => f.name.endsWith('.md'));
-    const parsed  = await Promise.all(
-      mdFiles.map(async f => parseMarkdown(f.name, await f.text()))
-    );
-    const valid = parsed.filter(
-      p => p.question && p.correct && Object.keys(p.options).length >= 2
-    );
-    valid.sort((a, b) => a.difficulty - b.difficulty || a.id.localeCompare(b.id));
-    setQuestions(valid);
-  }
-
   function startGame() {
     setQIdx(0); setScore(0); setScoreLog([]);
     setPhase('playing'); setSelected(null); setEliminated([]);
@@ -149,14 +162,11 @@ export function useGameState() {
   }
 
   return {
-    // State
     screen, questions, playerName, qIdx, phase, selected,
     score, scoreLog, timeLeft, phoneOpen, eliminated, lifelines, usedLifeline,
     q,
-    // Setters needed by screens
     setPlayerName, setPhoneOpen, setScreen, setTimerOn,
-    // Actions
-    loadFiles, startGame, selectOpt,
+    startGame, selectOpt,
     reveal: _reveal,
     next:   _next,
     do50, doPhone,

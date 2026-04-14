@@ -11,6 +11,8 @@ const PAGE = {
   boxSizing: 'border-box', gap: 14,
 };
 
+const isYouTube = url => /youtu\.?be/.test(url);
+
 export default function GameScreen({
   q, qIdx, questions, playerName, score,
   phase, selected, timeLeft, eliminated, lifelines, usedLifeline,
@@ -74,10 +76,13 @@ export default function GameScreen({
         </div>
       </div>
 
-      {/* ── Question card + Timer ── */}
-      <div style={{ width: '100%', maxWidth: 960, display: 'flex', gap: 20, alignItems: 'center' }}>
+      {/* ── Timer ── */}
+      <TimerCircle time={timeLeft} total={q.timer} size={120} />
+
+      {/* ── Question card ── */}
+      <div style={{ width: '100%', maxWidth: 960 }}>
         <div style={{
-          flex: 1, background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
+          width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
           border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
           boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
         }}>
@@ -100,18 +105,21 @@ export default function GameScreen({
             }} />
           )}
           {q.video && (
-            <iframe src={q.video} title="question-video" style={{
-              width: '100%', height: 200, border: 'none',
-              borderRadius: 10, marginBottom: 16, display: 'block',
-            }} allowFullScreen />
+            isYouTube(q.video)
+              ? <iframe src={q.video} title="question-video" style={{
+                  width: '100%', height: 200, border: 'none',
+                  borderRadius: 10, marginBottom: 16, display: 'block',
+                }} allowFullScreen />
+              : <video src={q.video} controls style={{
+                  width: '100%', maxHeight: 200, borderRadius: 10,
+                  marginBottom: 16, display: 'block', background: '#000',
+                }} />
           )}
 
           <p style={{ fontSize: 'clamp(1rem,2vw,1.3rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9' }}>
             {q.question}
           </p>
         </div>
-
-        <TimerCircle time={timeLeft} total={q.timer} size={120} />
       </div>
 
       {/* ── Answer grid ── */}

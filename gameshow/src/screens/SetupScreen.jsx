@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { DIFF_COLORS, DIFF_LABELS, MD_EXAMPLE } from '../constants';
 
 const PAGE = {
@@ -9,8 +8,7 @@ const PAGE = {
   justifyContent: 'center', padding: 24, boxSizing: 'border-box',
 };
 
-export default function SetupScreen({ questions, playerName, setPlayerName, loadFiles, startGame }) {
-  const [dragOver, setDragOver] = useState(false);
+export default function SetupScreen({ questions, playerName, setPlayerName, startGame }) {
   const hasQuestions = questions.length > 0;
 
   return (
@@ -30,7 +28,7 @@ export default function SetupScreen({ questions, playerName, setPlayerName, load
         </div>
 
         {/* Player name */}
-        <div style={{ marginBottom: 18 }}>
+        <div style={{ marginBottom: 24 }}>
           <label style={{ display: 'block', color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 8 }}>
             Player Name
           </label>
@@ -46,39 +44,16 @@ export default function SetupScreen({ questions, playerName, setPlayerName, load
           />
         </div>
 
-        {/* Drop zone */}
-        <div
-          onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={e => { e.preventDefault(); setDragOver(false); loadFiles(e.dataTransfer.files); }}
-          onClick={() => document.getElementById('fInput').click()}
-          style={{
-            border: `2px dashed ${dragOver ? '#60a5fa' : '#1e3a8a'}`,
-            borderRadius: 16, padding: '36px 24px', marginBottom: 18,
-            cursor: 'pointer', transition: 'all 0.2s',
-            background: dragOver ? 'rgba(30,58,138,0.2)' : 'transparent',
-            textAlign: 'center',
-          }}
-        >
-          <input id="fInput" type="file" multiple accept=".md"
-            style={{ display: 'none' }} onChange={e => loadFiles(e.target.files)} />
-          <div style={{ fontSize: '2.2rem', marginBottom: 10 }}>📂</div>
-          <div style={{ color: '#94a3b8', lineHeight: 1.7 }}>
-            Drop{' '}
-            <code style={{ color: '#60a5fa', background: '#0d1b3e', padding: '1px 6px', borderRadius: 4 }}>.md</code>
-            {' '}question files here
-            <br />
-            <span style={{ fontSize: 13, color: '#475569' }}>or click to browse</span>
-          </div>
-        </div>
-
         {/* Loaded question list */}
-        {hasQuestions && (
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 10 }}>
-              ✅ {questions.length} Question{questions.length !== 1 ? 's' : ''} Ready
-            </div>
-            <div style={{ maxHeight: 200, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ color: '#64748b', fontSize: 11, textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 10 }}>
+            {hasQuestions
+              ? `✅ ${questions.length} Question${questions.length !== 1 ? 's' : ''} loaded from src/questions/`
+              : '⚠ No questions found — add .md files to src/questions/'}
+          </div>
+
+          {hasQuestions && (
+            <div style={{ maxHeight: 260, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
               {questions.map((q, i) => (
                 <div key={i} style={{
                   background: '#0d1b3e', border: '1px solid #1e3a8a', borderRadius: 8,
@@ -98,8 +73,8 @@ export default function SetupScreen({ questions, playerName, setPlayerName, load
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Start button */}
         <button onClick={startGame} disabled={!hasQuestions} style={{
@@ -112,13 +87,13 @@ export default function SetupScreen({ questions, playerName, setPlayerName, load
           boxShadow: hasQuestions ? '0 0 24px #2563eb44' : 'none',
           transition: 'all 0.2s',
         }}>
-          {hasQuestions ? '▶  Start Game' : 'Load Questions First'}
+          {hasQuestions ? '▶  Start Game' : 'No questions found in src/questions/'}
         </button>
 
         {/* Format reference */}
         <details style={{ borderRadius: 10, overflow: 'hidden' }}>
           <summary style={{ color: '#475569', cursor: 'pointer', fontSize: 13, padding: '6px 0', userSelect: 'none' }}>
-            📋 Question file format (.md)
+            📋 Question file format (src/questions/my-question.md)
           </summary>
           <pre style={{
             background: '#0d1b3e', border: '1px solid #1e3a8a', borderRadius: '0 0 10px 10px',

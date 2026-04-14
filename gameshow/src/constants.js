@@ -6,8 +6,8 @@ export const MD_EXAMPLE = `\
 ---
 timer: 30
 difficulty: 3
-image: https://example.com/photo.jpg
-video: https://www.youtube.com/embed/VIDEO_ID
+image: /media/images/test_image.jpg
+video: /media/videos/test_video.mp4
 ---
 
 # What is the capital of France?

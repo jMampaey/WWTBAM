@@ -1,0 +1,55 @@
+export default function OptionBtn({ letter, text, phase, selected, correct, eliminated, onClick }) {
+  const isElim   = eliminated.includes(letter);
+  const canClick = !isElim && phase === 'playing';
+
+  let bg, border = '#2563eb', textCol = '#e2e8f0', shadow = '';
+
+  if (isElim) {
+    bg = '#08101e'; border = '#1e293b'; textCol = '#1e293b';
+
+  } else if (phase === 'revealed') {
+    if (letter === correct) {
+      bg = 'linear-gradient(135deg,#14532d,#16a34a,#14532d)';
+      border = '#4ade80'; shadow = '0 0 24px #16a34a88';
+    } else if (letter === selected) {
+      bg = 'linear-gradient(135deg,#7f1d1d,#dc2626,#7f1d1d)';
+      border = '#f87171'; shadow = '0 0 18px #dc262666';
+    } else {
+      bg = '#0b1525'; border = '#1e3a8a'; textCol = '#334155';
+    }
+
+  } else if (letter === selected) {
+    bg = 'linear-gradient(135deg,#78350f,#d97706,#78350f)';
+    border = '#f59e0b'; shadow = '0 0 18px #d9770644';
+
+  } else {
+    bg = 'linear-gradient(135deg,#0d1b3e,#1a3570,#0d1b3e)';
+  }
+
+  return (
+    <div
+      role="button"
+      onClick={() => canClick && onClick(letter)}
+      style={{
+        background: bg, border: `2px solid ${border}`, borderRadius: 14,
+        padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 14,
+        opacity: isElim ? 0.12 : 1, cursor: canClick ? 'pointer' : 'default',
+        transition: 'all 0.35s ease', userSelect: 'none',
+        boxShadow: shadow || `0 0 10px ${border}28`,
+      }}
+    >
+      <div style={{
+        width: 34, height: 34, borderRadius: '50%',
+        background: isElim ? '#1e293b' : border,
+        color: '#000', fontWeight: 'bold', fontSize: 15,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0, transition: 'background 0.35s',
+      }}>
+        {letter}
+      </div>
+      <span style={{ color: textCol, fontSize: 15, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
+        {isElim ? '\u00a0' : text}
+      </span>
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
 ---
-timer: 30
+timer: 10
 difficulty: 3
 image: /media/images/test_image.jpg
 ---

@@ -1,12 +1,13 @@
-export default function OptionBtn({ letter, text, phase, selected, correct, eliminated, onClick }) {
+export default function OptionBtn({ letter, text, phase, selected, correct, eliminated, onClick, hidden }) {
   const isElim   = eliminated.includes(letter);
-  const canClick = !isElim && phase === 'playing';
+  const canClick = !isElim && !hidden && (phase === 'playing' || phase === 'timeout' || phase === 'selected');
 
   let bg, border = '#2563eb', textCol = '#e2e8f0', shadow = '';
 
-  if (isElim) {
+  if (hidden) {
+    bg = '#0a1628'; border = '#0f2040'; textCol = '#0a1628';
+  } else if (isElim) {
     bg = '#08101e'; border = '#1e293b'; textCol = '#1e293b';
-
   } else if (phase === 'revealed') {
     if (letter === correct) {
       bg = 'linear-gradient(135deg,#14532d,#16a34a,#14532d)';
@@ -17,11 +18,9 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
     } else {
       bg = '#0b1525'; border = '#1e3a8a'; textCol = '#334155';
     }
-
   } else if (letter === selected) {
     bg = 'linear-gradient(135deg,#78350f,#d97706,#78350f)';
     border = '#f59e0b'; shadow = '0 0 18px #d9770644';
-
   } else {
     bg = 'linear-gradient(135deg,#0d1b3e,#1a3570,#0d1b3e)';
   }
@@ -32,22 +31,22 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
       onClick={() => canClick && onClick(letter)}
       style={{
         background: bg, border: `2px solid ${border}`, borderRadius: 14,
-        padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 14,
-        opacity: isElim ? 0.12 : 1, cursor: canClick ? 'pointer' : 'default',
+        padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 16,
+        opacity: (isElim || hidden) ? 0.15 : 1, cursor: canClick ? 'pointer' : 'default',
         transition: 'all 0.35s ease', userSelect: 'none',
         boxShadow: shadow || `0 0 10px ${border}28`,
       }}
     >
       <div style={{
-        width: 34, height: 34, borderRadius: '50%',
+        width: 44, height: 44, borderRadius: '50%',
         background: isElim ? '#1e293b' : border,
-        color: '#000', fontWeight: 'bold', fontSize: 15,
+        color: '#000', fontWeight: 'bold', fontSize: 18,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0, transition: 'background 0.35s',
       }}>
         {letter}
       </div>
-      <span style={{ color: textCol, fontSize: 15, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
+      <span style={{ color: textCol, fontSize: 18, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
         {isElim ? '\u00a0' : text}
       </span>
     </div>

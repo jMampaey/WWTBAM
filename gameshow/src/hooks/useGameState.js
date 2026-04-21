@@ -24,19 +24,20 @@ function loadQuestionsFromGlob() {
 }
 
 export function useGameState() {
-  const [screen,       setScreen]       = useState('setup');
-  const [questions,    setQuestions]    = useState([]);
-  const [playerName,   setPlayerName]   = useState('Player 1');
-  const [qIdx,         setQIdx]         = useState(0);
-  const [phase,        setPhase]        = useState('playing');
-  const [selected,     setSelected]     = useState(null);
-  const [score,        setScore]        = useState(0);
-  const [scoreLog,     setScoreLog]     = useState([]);
-  const [timeLeft,     setTimeLeft]     = useState(30);
-  const [timerOn,      setTimerOn]      = useState(false);
-  const [phoneOpen,    setPhoneOpen]    = useState(false);
-  const [eliminated,   setEliminated]   = useState([]);
-  const [lifelines,    setLifelines]    = useState({ fifty: true, phone: true });
+  const [screen, setScreen] = useState('setup');
+  const [questions, setQuestions] = useState([]);
+  const [playerName, setPlayerName] = useState('Lucas');
+  const [qIdx, setQIdx] = useState(0);
+  const [phase, setPhase] = useState('revealing');
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [score, setScore] = useState(0);
+  const [scoreLog, setScoreLog] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(30);
+  const [timerOn, setTimerOn] = useState(false);
+  const [phoneOpen, setPhoneOpen] = useState(false);
+  const [eliminated, setEliminated] = useState([]);
+  const [lifelines, setLifelines] = useState({ fifty: true, phone: true });
   const [usedLifeline, setUsedLifeline] = useState(false);
   const timerRef = useRef(null);
 
@@ -75,41 +76,56 @@ export function useGameState() {
     const handler = e => {
       const k = e.key.toUpperCase();
 
-      if (['A','B','C','D'].includes(k) && phase === 'playing') {
+      // Space during reveal phase — show next option, or start timer when all shown
+      if (e.key === ' ' && phase === 'revealing') {
+        e.preventDefault();
+        const optLetters = ['A', 'B', 'C', 'D'].filter(l => q?.options[l]);
+        if (revealedCount < optLetters.length) {
+          setRevealedCount(c => c + 1);
+        } else {
+          setPhase('playing');
+          setTimerOn(true);
+        }
+        return;
+      }
+
+      // A/B/C/D — select answer (also allowed after time runs out)
+      if (['A', 'B', 'C', 'D'].includes(k) && (phase === 'playing' || phase === 'timeout' || phase === 'selected')) {
         if (q?.options[k] && !eliminated.includes(k)) {
           setSelected(k);
           setPhase('selected');
-          setTimerOn(false);
         }
       }
 
+      // Enter / Space — advance
       if ((k === 'ENTER' || e.key === ' ') && e.target.tagName !== 'BUTTON') {
         e.preventDefault();
         if (phase === 'selected' || phase === 'timeout') _reveal();
-        else if (phase === 'revealed')                   _next();
+        else if (phase === 'revealed') _next();
       }
     };
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [screen, phase, q, eliminated, selected, usedLifeline, qIdx, questions]);
+  }, [screen, phase, q, eliminated, selected, usedLifeline, qIdx, questions, revealedCount]);
 
   // ── Private helpers ────────────────────────────────────────────────────────
   function _reveal() {
     if (phase !== 'selected' && phase !== 'timeout') return;
     const isRight = selected === q.correct;
-    const pts     = isRight
+    const pts = isRight
       ? (usedLifeline ? Math.floor(q.points / 2) : q.points)
       : 0;
 
     setPhase('revealed');
+    setTimerOn(false);
     if (isRight) setScore(s => s + pts);
     setScoreLog(l => [...l, {
       question: q.question,
-      correct:  isRight,
-      earned:   pts,
-      max:      q.points,
-      diff:     q.difficulty,
+      correct: isRight,
+      earned: pts,
+      max: q.points,
+      diff: q.difficulty,
     }]);
   }
 
@@ -119,36 +135,36 @@ export function useGameState() {
 
     setQIdx(ni);
     setTimeLeft(questions[ni].timer);
-    setPhase('playing');
+    setPhase('revealing'); setRevealedCount(0);
     setSelected(null);
     setEliminated([]);
     setPhoneOpen(false);
     setUsedLifeline(false);
-    setTimerOn(true);
+    setTimerOn(false);
   }
 
   // ── Public actions ─────────────────────────────────────────────────────────
   function startGame() {
     setQIdx(0); setScore(0); setScoreLog([]);
-    setPhase('playing'); setSelected(null); setEliminated([]);
+    setPhase('revealing'); setRevealedCount(0);
+    setSelected(null); setEliminated([]);
     setPhoneOpen(false); setLifelines({ fifty: true, phone: true });
     setUsedLifeline(false);
     setTimeLeft(questions[0]?.timer ?? 30);
-    setTimerOn(true);
+    setTimerOn(false);
     setScreen('game');
   }
 
   function selectOpt(letter) {
-    if (phase !== 'playing' || !q?.options[letter] || eliminated.includes(letter)) return;
+    if ((phase !== 'playing' && phase !== 'timeout' && phase !== 'selected') || !q?.options[letter] || eliminated.includes(letter)) return;
     setSelected(letter);
     setPhase('selected');
-    setTimerOn(false);
   }
 
   function do50() {
     if (!lifelines.fifty || phase !== 'playing' || !q) return;
     const wrong = Object.keys(q.options).filter(k => k !== q.correct);
-    const elim  = wrong.sort(() => 0.5 - Math.random()).slice(0, 2);
+    const elim = wrong.sort(() => 0.5 - Math.random()).slice(0, 2);
     setEliminated(elim);
     setLifelines(l => ({ ...l, fifty: false }));
     setUsedLifeline(true);
@@ -163,12 +179,13 @@ export function useGameState() {
 
   return {
     screen, questions, playerName, qIdx, phase, selected,
-    score, scoreLog, timeLeft, phoneOpen, eliminated, lifelines, usedLifeline,
+    score, scoreLog, timeLeft, timerOn, phoneOpen, eliminated, lifelines, usedLifeline,
+    revealedCount,
     q,
     setPlayerName, setPhoneOpen, setScreen, setTimerOn,
     startGame, selectOpt,
     reveal: _reveal,
-    next:   _next,
+    next: _next,
     do50, doPhone,
   };
 }

@@ -4,11 +4,11 @@ difficulty: 2
 video: /media/videos/test_video.mp4
 ---
 
-# What does CPU stand for?
+# Wat deed Leonora waardoor de familie een tweede boete kreeg?
 
-A) Central Processing Unit
-B) Core Processing Utility
-C) Compute Power Unit
-D) Central Program Uplink
+A) Ze zat niet in een kinderstoel
+B) Ze had geen gordel om
+C) Ze stak haar tong uit naar de politie
+D) Ze zat in de achterbak
 
-correct: A
+correct: B

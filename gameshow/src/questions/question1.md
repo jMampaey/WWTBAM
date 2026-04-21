@@ -4,11 +4,12 @@ difficulty: 3
 image: /media/images/test_image.jpg
 ---
 
-# What is the capital of France?
+# Hoe heeft Leonora er **niet** uit gezien?
 
-A) London
-B) Berlin
-C) Paris
-D) Madrid
+A) Als Pippi Langkous
+B) Aan de botox
+C) Als tonttu
+D) Als reiziger
+E) Als olifant
 
-correct: C
+correct: E

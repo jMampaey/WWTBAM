@@ -21,7 +21,7 @@ export default function SetupScreen({ questions, playerName, setPlayerName, star
             fontSize: 'clamp(2rem,5vw,3.2rem)', fontWeight: 900, margin: '0 0 8px',
             background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: -1,
-          }}>Who wants to be a miLEOnaire</h1>
+          }}>Who wants to be a miLEOnaire?</h1>
           <p style={{ color: '#475569', margin: 0, fontSize: 13, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
             One Player · vs The Clock
           </p>

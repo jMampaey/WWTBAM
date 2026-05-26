@@ -92,7 +92,7 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
           fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0,
           background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-        }}>Who wants to be a miLEOnaire</h2>
+        }}>Who wants to be a miLEOnaire?</h2>
       </div>
 
       {/* ── Bonus badge ── */}

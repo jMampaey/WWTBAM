@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 video: /media/videos/MummuKnuffel.MP4
-# image: /media/images/SiblingsSchommelstoel.JPEG
+answer_image: /media/images/SiblingsSchommelstoel.JPEG
 ---
 
 # Hoeveel besties heeft Leonora inmiddels meegenomen naar mummu in Finland?

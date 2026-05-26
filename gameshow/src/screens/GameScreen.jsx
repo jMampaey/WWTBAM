@@ -102,7 +102,7 @@ export default function GameScreen({
             fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
             background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>Who wants to be a miLEOnaire</h2>
+          }}>Who wants to be a miLEOnaire?</h2>
         </div>
         <div style={{ textAlign: 'right' }}>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Question</div>

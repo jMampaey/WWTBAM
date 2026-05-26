@@ -10,10 +10,12 @@ const RAW_FILES = import.meta.glob('../questions/*.md', {
 });
 
 function loadQuestionsFromGlob() {
-  const parsed = Object.entries(RAW_FILES).map(([path, text]) => {
-    const filename = path.split('/').pop();
-    return parseMarkdown(filename, text);
-  });
+  const parsed = Object.entries(RAW_FILES)
+    .filter(([path]) => !path.endsWith('/bonus.md'))
+    .map(([path, text]) => {
+      const filename = path.split('/').pop();
+      return parseMarkdown(filename, text);
+    });
 
   const valid = parsed.filter(
     p => p.question && p.correct && Object.keys(p.options).length >= 2
@@ -23,7 +25,16 @@ function loadQuestionsFromGlob() {
   return valid;
 }
 
+function loadBonusQuestion() {
+  const entry = Object.entries(RAW_FILES).find(([path]) => path.endsWith('/bonus.md'));
+  if (!entry) return null;
+  const q = parseMarkdown('bonus.md', entry[1]);
+  return q.question && q.correct ? q : null;
+}
+
 export function useGameState() {
+  const [bonusQ] = useState(() => loadBonusQuestion());
+  const [bonusAttempted, setBonusAttempted] = useState(false);
   const [screen, setScreen] = useState('setup');
   const [questions, setQuestions] = useState([]);
   const [playerName, setPlayerName] = useState('Lucas a.k.a. Future miLEOnaire');
@@ -145,7 +156,7 @@ export function useGameState() {
 
   // ── Public actions ─────────────────────────────────────────────────────────
   function startGame() {
-    setQIdx(0); setScore(0); setScoreLog([]);
+    setQIdx(0); setScore(0); setScoreLog([]); setBonusAttempted(false);
     setPhase('revealing'); setRevealedCount(0);
     setSelected(null); setEliminated([]);
     setPhoneOpen(false); setLifelines({ fifty: true, phone: true });
@@ -181,8 +192,8 @@ export function useGameState() {
     screen, questions, playerName, qIdx, phase, selected,
     score, scoreLog, timeLeft, timerOn, phoneOpen, eliminated, lifelines, usedLifeline,
     revealedCount,
-    q,
-    setPlayerName, setPhoneOpen, setScreen, setTimerOn,
+    q, bonusQ, bonusAttempted,
+    setPlayerName, setPhoneOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
     startGame, selectOpt,
     reveal: _reveal,
     next: _next,

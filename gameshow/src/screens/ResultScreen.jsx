@@ -1,69 +1,109 @@
+import { useEffect } from 'react';
+
 const PAGE = {
   minHeight: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  justifyContent: 'center', padding: 24, boxSizing: 'border-box',
+  padding: '40px 24px 48px', boxSizing: 'border-box', gap: 40,
 };
 
-export default function ResultScreen({ playerName, score, scoreLog, setScreen, setTimerOn }) {
-  const correctCount  = scoreLog.filter(l => l.correct).length;
-  const maxPossible   = scoreLog.reduce((a, l) => a + l.max, 0);
-  const pct           = maxPossible ? Math.round(score / maxPossible * 100) : 0;
-  const trophy        = correctCount === scoreLog.length ? '🏆' : correctCount > scoreLog.length / 2 ? '🥈' : '🎮';
+export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonusAttempted, setScreen }) {
+  const maxPossible  = scoreLog.reduce((a, l) => a + l.max, 0);
+  const hasBonus     = bonusQ != null && score < maxPossible && !bonusAttempted;
 
-  function goBack() {
-    setTimerOn(false);
-    setScreen('setup');
-  }
+  useEffect(() => {
+    const onKey = e => {
+      if (e.code === 'Space') setScreen(hasBonus ? 'bonus' : 'final');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [setScreen, hasBonus]);
 
   return (
     <div style={PAGE}>
-      <div style={{ width: '100%', maxWidth: 700, textAlign: 'center' }}>
 
-        <div style={{ fontSize: '4.5rem', marginBottom: 12 }}>{trophy}</div>
+      {/* ── Title ── */}
+      <h1 style={{
+        fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900, margin: 0,
+        background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
+        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        textAlign: 'center',
+      }}>
+        Who wants to be a miLEOnaire
+      </h1>
 
-        <div style={{ color: '#64748b', fontSize: 12, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: 4 }}>
-          Final Score
-        </div>
-        <div style={{ fontSize: '4rem', fontWeight: 900, color: '#f59e0b', lineHeight: 1, marginBottom: 8 }}>
+      {/* ── Pot of gold ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+        <ScorePot score={score} maxScore={maxPossible} />
+        <div style={{ fontWeight: 900, fontSize: '3.5rem', color: '#f59e0b', lineHeight: 1 }}>
           {score.toLocaleString()}
         </div>
-        <div style={{ color: '#64748b', marginBottom: 32 }}>
-          {playerName} · {correctCount}/{scoreLog.length} correct · {pct}% of max ({maxPossible.toLocaleString()} pts)
-        </div>
-
-        {/* Per-question breakdown */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 32, textAlign: 'left' }}>
-          {scoreLog.map((l, i) => (
-            <div key={i} style={{
-              background: '#0d1b3e', borderRadius: 10, padding: '12px 16px',
-              border: `1px solid ${l.correct ? '#16a34a44' : '#dc262644'}`,
-              display: 'flex', alignItems: 'center', gap: 12,
-            }}>
-              <span style={{ fontSize: '1.1rem', flexShrink: 0 }}>{l.correct ? '✅' : '❌'}</span>
-              <span style={{
-                flex: 1, color: '#94a3b8', fontSize: 13,
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {l.question}
-              </span>
-              <span style={{ flexShrink: 0, fontWeight: 700, fontSize: 14, color: l.correct ? '#4ade80' : '#f87171' }}>
-                {l.correct ? `+${l.earned.toLocaleString()}` : '0'} / {l.max}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <button onClick={goBack} style={{
-          background: 'linear-gradient(135deg,#2563eb,#7c3aed)', color: '#fff',
-          border: 'none', borderRadius: 12, padding: '14px 40px',
-          fontSize: '1.05rem', fontWeight: 800, cursor: 'pointer',
-        }}>
-          ↩ Back to Setup
-        </button>
-
       </div>
+
+      {/* ── Tagline ── */}
+      <p style={{ fontSize: '1.5rem', fontWeight: 700, color: '#e2e8f0', margin: 0, textAlign: 'center' }}>
+        {hasBonus
+          ? "Let's try a bonus question to fill the pot o' gold!"
+          : `${playerName}, what's in the pot o' gold..?`}
+      </p>
+
+
+    </div>
+  );
+}
+
+// ── ScorePot ─────────────────────────────────────────────────────────────────
+
+function ScorePot({ score, maxScore }) {
+  const pct = maxScore > 0 ? Math.min(1, score / maxScore) : 0;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <span style={{ fontSize: '2rem' }}>🪙</span>
+
+      {/* Pot body */}
+      <div style={{
+        position: 'relative', width: 100, height: 300,
+        background: '#080e1a',
+        border: '2px solid #1e3a8a',
+        borderRadius: '14px 14px 48px 48px',
+        overflow: 'hidden',
+        boxShadow: 'inset 0 2px 10px #00000088, 0 0 20px #1e3a8a44',
+      }}>
+        {/* Gold fill */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: `${pct * 100}%`,
+          background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
+          boxShadow: '0 0 24px #f59e0b88',
+          transition: 'height 1s cubic-bezier(0.34, 1.4, 0.64, 1)',
+        }} />
+        {/* Gloss sheen */}
+        <div style={{
+          position: 'absolute', top: 0, left: '22%', width: '14%', bottom: 0,
+          background: 'linear-gradient(to bottom, transparent 10%, rgba(255,255,255,0.07) 50%, transparent 90%)',
+          pointerEvents: 'none',
+        }} />
+        {/* Tick marks */}
+        {[0.25, 0.5, 0.75].map(t => (
+          <div key={t} style={{
+            position: 'absolute', left: 4, right: 4,
+            bottom: `${t * 100}%`,
+            height: 1,
+            background: 'rgba(255,255,255,0.08)',
+          }} />
+        ))}
+      </div>
+
+      {/* Pot rim */}
+      <div style={{
+        width: 120, height: 10,
+        background: 'linear-gradient(135deg,#1e3a8a,#2563eb44)',
+        border: '2px solid #1e3a8a',
+        borderRadius: 5,
+        marginTop: -18,
+      }} />
     </div>
   );
 }

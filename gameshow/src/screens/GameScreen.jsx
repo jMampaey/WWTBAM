@@ -130,8 +130,8 @@ export default function GameScreen({
               return (<>
                 {img && (
                   <img src={img} alt="" style={{
-                    width: '100%', height: 400, objectFit: 'cover',
-                    borderRadius: 10, marginBottom: 16, display: 'block',
+                    width: '100%', height: 400, objectFit: 'contain',
+                    background: '#000', borderRadius: 10, marginBottom: 16, display: 'block',
                   }} />
                 )}
                 {vid && (

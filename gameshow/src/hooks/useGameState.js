@@ -26,7 +26,7 @@ function loadQuestionsFromGlob() {
 export function useGameState() {
   const [screen, setScreen] = useState('setup');
   const [questions, setQuestions] = useState([]);
-  const [playerName, setPlayerName] = useState('Lucas');
+  const [playerName, setPlayerName] = useState('Lucas a.k.a. Future miLEOnaire');
   const [qIdx, setQIdx] = useState(0);
   const [phase, setPhase] = useState('revealing');
   const [revealedCount, setRevealedCount] = useState(0);

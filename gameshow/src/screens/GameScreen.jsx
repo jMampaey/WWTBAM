@@ -7,7 +7,7 @@ const PAGE = {
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  justifyContent: 'space-between', padding: '20px 24px 72px 24px',
+  padding: '20px 24px 72px 24px',
   boxSizing: 'border-box', gap: 14,
 };
 
@@ -61,114 +61,136 @@ export default function GameScreen({
         </div>
       )}
 
-      {/* ── Lifelines — fixed to left side ── */}
-      <div style={{
-        position: 'fixed', left: 24, top: '50%', transform: 'translateY(-50%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
-      }}>
-        <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
-          Lifelines
-        </div>
-        <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
-          title="Remove 2 wrong answers — halves score for this question" />
-        <LifelineBtn label="📞 Phone" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
-          title="Pause timer, consult a friend — halves score for this question" />
-        {usedLifeline && (phase === 'playing' || phase === 'selected') && (
-          <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>½ score active</span>
-        )}
-      </div>
-
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 960, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ width: '100%', maxWidth: 1280, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Player</div>
-          <div style={{ fontWeight: 700, fontSize: '1.6rem' }}>{playerName}</div>
+          <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
+          <h2 style={{
+            fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
+            background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>Who wants to be a miLEOnaire</h2>
+        </div>
+        <div style={{ textAlign: 'right' }}>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Question</div>
           <div style={{ fontWeight: 700, fontSize: '1.6rem' }}>{qIdx + 1} / {questions.length}</div>
         </div>
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-          <div style={{ fontWeight: 900, fontSize: '2rem', color: '#f59e0b' }}>{score.toLocaleString()}</div>
-        </div>
       </div>
 
-      {/* ── Question card ── */}
-      <div style={{ width: '100%', maxWidth: 960 }}>
+      {/* ── Middle: 3-column layout ── */}
+      <div style={{ width: '100%', maxWidth: 1280, display: 'flex', gap: 20, alignItems: 'center', flex: 1 }}>
+
+        {/* Left: Lifelines */}
         <div style={{
-          width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
-          border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
-          boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
+          width: 180, flexShrink: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
+          paddingTop: 6,
         }}>
-          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <span style={{
-              background: DIFF_COLORS[q.difficulty], color: '#000',
-              padding: '5px 16px', borderRadius: 9999, fontSize: 14, fontWeight: 900,
-            }}>
-              {DIFF_LABELS[q.difficulty]}
-            </span>
-            <span style={{ color: '#475569', fontSize: 16 }}>
-              {ptsAvail.toLocaleString()} pts{usedLifeline ? ' (lifeline active)' : ''}
-            </span>
+          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+            Lifelines
+          </div>
+          <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
+            title="Remove 2 wrong answers — halves score for this question" />
+          <LifelineBtn label="📞 Phone" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
+            title="Pause timer, consult a friend — halves score for this question" />
+          {usedLifeline && (phase === 'playing' || phase === 'selected') && (
+            <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>½ score active</span>
+          )}
+        </div>
+
+        {/* Center: Question card + Answer grid + Controls */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+          {/* Question card */}
+          <div style={{
+            width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
+            border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
+            boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
+          }}>
+            <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <span style={{
+                background: DIFF_COLORS[q.difficulty], color: '#000',
+                padding: '5px 16px', borderRadius: 9999, fontSize: 14, fontWeight: 900,
+              }}>
+                {DIFF_LABELS[q.difficulty]}
+              </span>
+              <span style={{ color: '#475569', fontSize: 16 }}>
+                {ptsAvail.toLocaleString()} pts{usedLifeline ? ' (lifeline active)' : ''}
+              </span>
+            </div>
+
+            {q.image && (
+              <img src={q.image} alt="" style={{
+                width: '100%', height: 400, objectFit: 'cover',
+                borderRadius: 10, marginBottom: 16, display: 'block',
+              }} />
+            )}
+            {q.video && (
+              isYouTube(q.video)
+                ? <iframe src={q.video} title="question-video" style={{
+                    width: '100%', height: 400, border: 'none',
+                    borderRadius: 10, marginBottom: 16, display: 'block',
+                  }} allowFullScreen />
+                : <video src={q.video} controls style={{
+                    width: '100%', maxHeight: 400, borderRadius: 10,
+                    marginBottom: 16, display: 'block', background: '#000',
+                  }} />
+            )}
+
+            <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9' }}>
+              {q.question}
+            </p>
           </div>
 
-          {q.image && (
-            <img src={q.image} alt="" style={{
-              width: '100%', height: 400, objectFit: 'cover',
-              borderRadius: 10, marginBottom: 16, display: 'block',
-            }} />
-          )}
-          {q.video && (
-            isYouTube(q.video)
-              ? <iframe src={q.video} title="question-video" style={{
-                  width: '100%', height: 400, border: 'none',
-                  borderRadius: 10, marginBottom: 16, display: 'block',
-                }} allowFullScreen />
-              : <video src={q.video} controls style={{
-                  width: '100%', maxHeight: 400, borderRadius: 10,
-                  marginBottom: 16, display: 'block', background: '#000',
-                }} />
-          )}
+          {/* Answer grid */}
+          <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {optLetters.map((letter, i) => (
+              <OptionBtn
+                key={letter} letter={letter} text={q.options[letter]}
+                phase={phase} selected={selected} correct={q.correct}
+                eliminated={eliminated} onClick={selectOpt}
+                hidden={i >= revealedCount}
+              />
+            ))}
+          </div>
 
-          <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9' }}>
-            {q.question}
-          </p>
+          {/* Controls bar */}
+          <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ color: '#1e3a8a', fontSize: 15 }}>
+              {phase === 'revealing' && revealedCount < optLetters.length && 'Space — reveal next option'}
+              {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
+              {phase === 'playing'                           && 'Press A B C D to select'}
+              {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
+              {phase === 'revealed'                          && 'Press Enter for next'}
+            </span>
+            <div style={{ flex: 1 }} />
+            {(phase === 'selected' || phase === 'timeout') && (
+              <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
+                {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
+              </ActionBtn>
+            )}
+            {phase === 'revealed' && (
+              <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
+                {isLast ? '🏁 Final Results' : 'Next →'}
+              </ActionBtn>
+            )}
+          </div>
+
         </div>
-      </div>
 
-      {/* ── Answer grid ── */}
-      <div style={{ width: '100%', maxWidth: 960, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        {optLetters.map((letter, i) => (
-          <OptionBtn
-            key={letter} letter={letter} text={q.options[letter]}
-            phase={phase} selected={selected} correct={q.correct}
-            eliminated={eliminated} onClick={selectOpt}
-            hidden={i >= revealedCount}
-          />
-        ))}
-      </div>
+        {/* Right: Score */}
+        <div style={{
+          width: 180, flexShrink: 0,
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
+          paddingTop: 6,
+        }}>
+          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
+          <div style={{ fontWeight: 900, fontSize: '2.4rem', color: '#f59e0b', lineHeight: 1 }}>{score.toLocaleString()}</div>
+        </div>
 
-      {/* ── Controls bar ── */}
-      <div style={{ width: '100%', maxWidth: 960, display: 'flex', alignItems: 'center', gap: 10 }}>
-        <span style={{ color: '#1e3a8a', fontSize: 15 }}>
-          {phase === 'revealing' && revealedCount < optLetters.length && 'Space — reveal next option'}
-          {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
-          {phase === 'playing'                           && 'Press A B C D to select'}
-          {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
-          {phase === 'revealed'                          && 'Press Enter for next'}
-        </span>
-        <div style={{ flex: 1 }} />
-        {(phase === 'selected' || phase === 'timeout') && (
-          <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
-            {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
-          </ActionBtn>
-        )}
-        {phase === 'revealed' && (
-          <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
-            {isLast ? '🏁 Final Results' : 'Next →'}
-          </ActionBtn>
-        )}
       </div>
 
       {/* ── Timer bar ── */}

@@ -1,15 +1,15 @@
 ---
 timer: 10
 difficulty: 3
-image: /media/images/test_image.jpg
-answer_video: /media/videos/test_video.mp4
+image: /media/images/PippiLangkous.JPEG
+# image: /media/images/Collage.png
 ---
 
-# What is the **capital** of France?
+# Hoe heeft Leonora er **niet** uit gezien?
 
-A) London
-B) Berlin
-C) Paris
-D) Madrid
+A) Aan de botox
+B) Als tonttu
+C) Als paard
+D) Als wereldreiziger
 
 correct: C

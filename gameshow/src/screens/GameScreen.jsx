@@ -24,6 +24,7 @@ export default function GameScreen({
   const optLetters = ['A','B','C','D'].filter(l => q.options[l]);
   const isLast     = qIdx + 1 >= questions.length;
   const ptsAvail   = usedLifeline ? Math.floor(q.points / 2) : q.points;
+  const maxScore   = questions.reduce((sum, qq) => sum + qq.points, 0);
 
   return (
     <div style={PAGE}>
@@ -122,26 +123,33 @@ export default function GameScreen({
               </span>
             </div>
 
-            {q.image && (
-              <img src={q.image} alt="" style={{
-                width: '100%', height: 400, objectFit: 'cover',
-                borderRadius: 10, marginBottom: 16, display: 'block',
-              }} />
-            )}
-            {q.video && (
-              isYouTube(q.video)
-                ? <iframe src={q.video} title="question-video" style={{
-                    width: '100%', height: 400, border: 'none',
+            {(() => {
+              const showAnswerMedia = phase === 'revealed' && (q.answerImage || q.answerVideo);
+              const img = showAnswerMedia ? q.answerImage : q.image;
+              const vid = showAnswerMedia ? q.answerVideo : q.video;
+              return (<>
+                {img && (
+                  <img src={img} alt="" style={{
+                    width: '100%', height: 400, objectFit: 'cover',
                     borderRadius: 10, marginBottom: 16, display: 'block',
-                  }} allowFullScreen />
-                : <video src={q.video} controls style={{
-                    width: '100%', maxHeight: 400, borderRadius: 10,
-                    marginBottom: 16, display: 'block', background: '#000',
                   }} />
-            )}
+                )}
+                {vid && (
+                  isYouTube(vid)
+                    ? <iframe src={vid} title="question-video" style={{
+                        width: '100%', height: 400, border: 'none',
+                        borderRadius: 10, marginBottom: 16, display: 'block',
+                      }} allowFullScreen />
+                    : <video src={vid} controls style={{
+                        width: '100%', maxHeight: 400, borderRadius: 10,
+                        marginBottom: 16, display: 'block', background: '#000',
+                      }} />
+                )}
+              </>);
+            })()}
 
-            <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9' }}>
-              {q.question}
+            <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+              <RichText text={q.question} />
             </p>
           </div>
 
@@ -181,14 +189,16 @@ export default function GameScreen({
 
         </div>
 
-        {/* Right: Score */}
+        {/* Right: Score pot */}
         <div style={{
           width: 180, flexShrink: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
-          paddingTop: 6,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
         }}>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-          <div style={{ fontWeight: 900, fontSize: '2.4rem', color: '#f59e0b', lineHeight: 1 }}>{score.toLocaleString()}</div>
+          <ScorePot score={score} maxScore={maxScore} />
+          <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
+            {score.toLocaleString()}
+          </div>
         </div>
 
       </div>
@@ -281,6 +291,78 @@ function LifelineBtn({ label, active, disabled, onClick, title }) {
     >
       {label}
     </button>
+  );
+}
+
+function RichText({ text }) {
+  const tokens = [];
+  const re = /(\*\*(.+?)\*\*|\*(.+?)\*)/g;
+  let last = 0, match;
+  while ((match = re.exec(text)) !== null) {
+    if (match.index > last) tokens.push({ t: 'text', v: text.slice(last, match.index) });
+    if (match[0].startsWith('**')) tokens.push({ t: 'bold', v: match[2] });
+    else tokens.push({ t: 'italic', v: match[3] });
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) tokens.push({ t: 'text', v: text.slice(last) });
+  return tokens.map((tok, i) => {
+    if (tok.t === 'bold')   return <strong key={i} style={{ fontWeight: 900, color: '#f59e0b' }}>{tok.v}</strong>;
+    if (tok.t === 'italic') return <em key={i}>{tok.v}</em>;
+    return tok.v;
+  });
+}
+
+function ScorePot({ score, maxScore }) {
+  const pct = maxScore > 0 ? Math.min(1, score / maxScore) : 0;
+  const fillH = `${pct * 100}%`;
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+      <span style={{ fontSize: '1.6rem' }}>🪙</span>
+
+      {/* Pot body */}
+      <div style={{
+        position: 'relative', width: 64, height: 200,
+        background: '#080e1a',
+        border: '2px solid #1e3a8a',
+        borderRadius: '10px 10px 32px 32px',
+        overflow: 'hidden',
+        boxShadow: 'inset 0 2px 10px #00000088, 0 0 12px #1e3a8a44',
+      }}>
+        {/* Gold fill — rises from bottom */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: fillH,
+          background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
+          boxShadow: '0 0 18px #f59e0b88',
+          transition: 'height 0.7s cubic-bezier(0.34, 1.4, 0.64, 1)',
+        }} />
+        {/* Gloss sheen */}
+        <div style={{
+          position: 'absolute', top: 0, left: '22%', width: '14%', bottom: 0,
+          background: 'linear-gradient(to bottom, transparent 10%, rgba(255,255,255,0.07) 50%, transparent 90%)',
+          pointerEvents: 'none',
+        }} />
+        {/* Tick marks */}
+        {[0.25, 0.5, 0.75].map(t => (
+          <div key={t} style={{
+            position: 'absolute', left: 4, right: 4,
+            bottom: `${t * 100}%`,
+            height: 1,
+            background: 'rgba(255,255,255,0.08)',
+          }} />
+        ))}
+      </div>
+
+      {/* Pot rim */}
+      <div style={{
+        width: 80, height: 8,
+        background: 'linear-gradient(135deg,#1e3a8a,#2563eb44)',
+        border: '2px solid #1e3a8a',
+        borderRadius: 4,
+        marginTop: -14,
+      }} />
+    </div>
   );
 }
 

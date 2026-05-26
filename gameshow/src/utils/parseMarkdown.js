@@ -46,7 +46,9 @@ export function parseMarkdown(filename, text) {
     timer:      Math.max(5, parseInt(meta.timer) || 30),
     difficulty: diff,
     points:     DIFF_POINTS[diff],
-    image:      meta.image || null,
-    video:      meta.video || null,
+    image:       meta.image || null,
+    video:       meta.video || null,
+    answerImage: meta.answer_image || null,
+    answerVideo: meta.answer_video || null,
   };
 }

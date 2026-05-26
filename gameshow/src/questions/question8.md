@@ -1,14 +1,15 @@
 ---
 timer: 30
 difficulty: 3
-image: /media/images/test_image.jpg
+image: /media/images/LeoTiltHamu.jpg
+# video: /media/videos/NationalGeographic.MP4
 ---
 
-# Op welke manier heeft Leonora **géén** litteken opgelopen?
+# Wat ging Leonora kijken toen ze de gewone films en series zat was?
 
-A) Mislukte handstand tegen een glazen deur
-B) Springen van rots naar rots
-C) Scherpe snijmachine in de slagerij
-D) Wegrennen van een boze Charlotte
+A) National Geographic
+B) Spongebob
+C) Oude afleveringen van het Jeugdjournaal
+D) Spaanse musicals
 
-correct: B
+correct: A

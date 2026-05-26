@@ -1,15 +1,15 @@
 ---
 timer: 10
 difficulty: 3
-image: /media/images/test_image.jpg
+image: /media/images/PippiLangkous.JPEG
+# image: /media/images/Collage.png
 ---
 
 # Hoe heeft Leonora er **niet** uit gezien?
 
-A) Als Pippi Langkous
-B) Aan de botox
-C) Als tonttu
-D) Als reiziger
-E) Als olifant
+A) Aan de botox
+B) Als tonttu
+C) Als paard
+D) Als wereldreiziger
 
-correct: E
+correct: C

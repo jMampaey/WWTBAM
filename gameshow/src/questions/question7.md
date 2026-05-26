@@ -1,14 +1,15 @@
 ---
 timer: 30
 difficulty: 3
-image: /media/images/test_image.jpg
+image: /media/images/WondZwartWit.JPEG
+# video: /media/videos/TeringDom.MP4
 ---
 
-# Wat vindt Leonora **niet** lekker?
+# Op welke manier heeft Leonora **géén** litteken opgelopen?
 
-A) Pantteri
-B) Karjalanpiirakka
-C) Sekamehu
-D) Turkin pippuri
+A) Mislukte handstand tegen een glazen deur
+B) Springen van rots naar rots
+C) Scherpe snijmachine in de slagerij
+D) Wegrennen van een boze Charlotte
 
-correct: D
+correct: B

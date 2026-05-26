@@ -1,14 +1,15 @@
 ---
 timer: 30
 difficulty: 3
-image: /media/images/test_image.jpg
+image: /media/images/GeilInNatuur.JPEG
+# image: /media/images/WintersportSelfie.JPEG
 ---
 
-# Welke Just Dance dans kent Leonora uit haar hoofd?
+# Welke bijnaam heeft Leonora **niet**?
 
-A) Dare - Gorillaz
-B) Who let the dogs out - Baha Men
-C) Don’t worry be happy - Bobby McFerrin
-D) Cotton Eye Joe - Rednex
+A) Spekbeenie
+B) Lole
+C) Mini Kopenhagen
+D) Dora
 
-correct: A
+correct: C

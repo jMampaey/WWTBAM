@@ -1,14 +1,15 @@
 ---
 timer: 30
 difficulty: 3
-image: /media/images/test_image.jpg
+image: /media/images/Piparkakkutalo.JPEG
+# video: /media/videos/AssaMix.MP4
 ---
 
-# Welke bijnaam heeft Leonora **niet**?
+# Wat vindt Leonora **niet** lekker?
 
-A) Spekbeenie
-B) Lole
-C) Mini Kopenhagen
-D) Dora
+A) Pantteri
+B) Karjalanpiirakka
+C) Sekamehu
+D) Turkin pippuri
 
-correct: C
+correct: D

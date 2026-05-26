@@ -1,7 +1,8 @@
 ---
 timer: 30
-difficulty: 2
-video: /media/videos/test_video.mp4
+difficulty: 3
+image: /media/images/Disneyland.jpg
+# image: /media/images/BeatrixlaanHandInHand.JPEG
 ---
 
 # Wat deed Leonora waardoor de familie een tweede boete kreeg?

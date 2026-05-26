@@ -50,7 +50,10 @@ export function useGameState() {
   const [eliminated, setEliminated] = useState([]);
   const [lifelines, setLifelines] = useState({ fifty: true, phone: true });
   const [usedLifeline, setUsedLifeline] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
   const timerRef = useRef(null);
+
+  const qPhase = qq => qq?.video ? 'prereveal' : 'revealing';
 
   const q = questions[qIdx] ?? null;
 
@@ -87,6 +90,18 @@ export function useGameState() {
     const handler = e => {
       const k = e.key.toUpperCase();
 
+      // Space during prereveal — first press plays video, second moves to revealing
+      if (e.key === ' ' && phase === 'prereveal') {
+        e.preventDefault();
+        if (!videoStarted) {
+          setVideoStarted(true);
+        } else {
+          setVideoStarted(false);
+          setPhase('revealing');
+        }
+        return;
+      }
+
       // Space during reveal phase — show next option, or start timer when all shown
       if (e.key === ' ' && phase === 'revealing') {
         e.preventDefault();
@@ -118,7 +133,7 @@ export function useGameState() {
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [screen, phase, q, eliminated, selected, usedLifeline, qIdx, questions, revealedCount]);
+  }, [screen, phase, q, eliminated, selected, usedLifeline, qIdx, questions, revealedCount, videoStarted]);
 
   // ── Private helpers ────────────────────────────────────────────────────────
   function _reveal() {
@@ -146,18 +161,20 @@ export function useGameState() {
 
     setQIdx(ni);
     setTimeLeft(questions[ni].timer);
-    setPhase('revealing'); setRevealedCount(0);
+    setPhase(qPhase(questions[ni])); setRevealedCount(0);
     setSelected(null);
     setEliminated([]);
     setPhoneOpen(false);
     setUsedLifeline(false);
     setTimerOn(false);
+    setVideoStarted(false);
   }
 
   // ── Public actions ─────────────────────────────────────────────────────────
   function startGame() {
     setQIdx(0); setScore(0); setScoreLog([]); setBonusAttempted(false);
-    setPhase('revealing'); setRevealedCount(0);
+    setPhase(qPhase(questions[0])); setRevealedCount(0);
+    setVideoStarted(false);
     setSelected(null); setEliminated([]);
     setPhoneOpen(false); setLifelines({ fifty: true, phone: true });
     setUsedLifeline(false);
@@ -192,7 +209,7 @@ export function useGameState() {
     screen, questions, playerName, qIdx, phase, selected,
     score, scoreLog, timeLeft, timerOn, phoneOpen, eliminated, lifelines, usedLifeline,
     revealedCount,
-    q, bonusQ, bonusAttempted,
+    q, bonusQ, bonusAttempted, videoStarted,
     setPlayerName, setPhoneOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
     startGame, selectOpt,
     reveal: _reveal,

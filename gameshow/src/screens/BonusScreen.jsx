@@ -146,7 +146,7 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
                       width: '100%', height: 400, border: 'none',
                       borderRadius: 10, marginBottom: 16, display: 'block',
                     }} allowFullScreen />
-                  : <video src={vid} controls style={{
+                  : <video src={vid} style={{
                       width: '100%', maxHeight: 400, borderRadius: 10,
                       marginBottom: 16, display: 'block', background: '#000',
                     }} />

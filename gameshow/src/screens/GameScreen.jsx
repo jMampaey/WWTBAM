@@ -16,7 +16,7 @@ const isYouTube = url => /youtu\.?be/.test(url);
 export default function GameScreen({
   q, qIdx, questions, playerName, score,
   phase, selected, timeLeft, timerOn, eliminated, lifelines, usedLifeline,
-  revealedCount,
+  revealedCount, videoStarted,
   phoneOpen, setPhoneOpen,
   selectOpt, reveal, next, do50, doPhone,
 }) {
@@ -25,6 +25,11 @@ export default function GameScreen({
   const isLast     = qIdx + 1 >= questions.length;
   const ptsAvail   = usedLifeline ? Math.floor(q.points / 2) : q.points;
   const maxScore   = questions.reduce((sum, qq) => sum + qq.points, 0);
+  const videoRef   = useRef(null);
+
+  useEffect(() => {
+    if (videoStarted && videoRef.current) videoRef.current.play();
+  }, [videoStarted]);
 
   return (
     <div style={PAGE}>
@@ -136,14 +141,20 @@ export default function GameScreen({
                 )}
                 {vid && (
                   isYouTube(vid)
-                    ? <iframe src={vid} title="question-video" style={{
-                        width: '100%', height: 400, border: 'none',
-                        borderRadius: 10, marginBottom: 16, display: 'block',
-                      }} allowFullScreen />
-                    : <video src={vid} controls style={{
-                        width: '100%', maxHeight: 400, borderRadius: 10,
-                        marginBottom: 16, display: 'block', background: '#000',
-                      }} />
+                    ? <iframe
+                        src={showAnswerMedia ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
+                        title="question-video" allow="autoplay" style={{
+                          width: '100%', height: 400, border: 'none',
+                          borderRadius: 10, marginBottom: 16, display: 'block',
+                        }} allowFullScreen />
+                    : <video
+                        ref={showAnswerMedia ? undefined : videoRef}
+                        src={vid}
+                        autoPlay={showAnswerMedia}
+                        style={{
+                          width: '100%', maxHeight: 400, borderRadius: 10,
+                          marginBottom: 16, display: 'block', background: '#000',
+                        }} />
                 )}
               </>);
             })()}
@@ -168,7 +179,9 @@ export default function GameScreen({
           {/* Controls bar */}
           <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ color: '#1e3a8a', fontSize: 15 }}>
-              {phase === 'revealing' && revealedCount < optLetters.length && 'Space — reveal next option'}
+              {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
+              {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
+              {phase === 'revealing' && revealedCount < optLetters.length  && 'Space — reveal next option'}
               {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
               {phase === 'playing'                           && 'Press A B C D to select'}
               {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}

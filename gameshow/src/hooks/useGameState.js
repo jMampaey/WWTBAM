@@ -51,7 +51,9 @@ export function useGameState() {
   const [lifelines, setLifelines] = useState({ fifty: true, phone: true });
   const [usedLifeline, setUsedLifeline] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
-  const timerRef = useRef(null);
+  const [slidePhase, setSlidePhase] = useState(null);
+  const timerRef  = useRef(null);
+  const slideTimer = useRef(null);
 
   const qPhase = qq => qq?.video ? 'prereveal' : 'revealing';
 
@@ -159,15 +161,21 @@ export function useGameState() {
     const ni = qIdx + 1;
     if (ni >= questions.length) { setScreen('result'); return; }
 
-    setQIdx(ni);
-    setTimeLeft(questions[ni].timer);
-    setPhase(qPhase(questions[ni])); setRevealedCount(0);
-    setSelected(null);
-    setEliminated([]);
-    setPhoneOpen(false);
-    setUsedLifeline(false);
-    setTimerOn(false);
-    setVideoStarted(false);
+    clearTimeout(slideTimer.current);
+    setSlidePhase('exit');
+    slideTimer.current = setTimeout(() => {  // 10ms buffer after 350ms transition
+      setQIdx(ni);
+      setTimeLeft(questions[ni].timer);
+      setPhase(qPhase(questions[ni])); setRevealedCount(0);
+      setSelected(null);
+      setEliminated([]);
+      setPhoneOpen(false);
+      setUsedLifeline(false);
+      setTimerOn(false);
+      setVideoStarted(false);
+      setSlidePhase('enter');
+      slideTimer.current = setTimeout(() => setSlidePhase(null), 400);
+    }, 360);
   }
 
   // ── Public actions ─────────────────────────────────────────────────────────
@@ -209,7 +217,7 @@ export function useGameState() {
     screen, questions, playerName, qIdx, phase, selected,
     score, scoreLog, timeLeft, timerOn, phoneOpen, eliminated, lifelines, usedLifeline,
     revealedCount,
-    q, bonusQ, bonusAttempted, videoStarted,
+    q, bonusQ, bonusAttempted, videoStarted, slidePhase,
     setPlayerName, setPhoneOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
     startGame, selectOpt,
     reveal: _reveal,

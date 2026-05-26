@@ -8,7 +8,7 @@ const PAGE = {
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   padding: '20px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 14,
+  boxSizing: 'border-box', gap: 14, overflowX: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -16,7 +16,7 @@ const isYouTube = url => /youtu\.?be/.test(url);
 export default function GameScreen({
   q, qIdx, questions, playerName, score,
   phase, selected, timeLeft, timerOn, eliminated, lifelines, usedLifeline,
-  revealedCount, videoStarted,
+  revealedCount, videoStarted, slidePhase,
   phoneOpen, setPhoneOpen,
   selectOpt, reveal, next, do50, doPhone,
 }) {
@@ -27,6 +27,25 @@ export default function GameScreen({
   const maxScore   = questions.reduce((sum, qq) => sum + qq.points, 0);
   const videoRef        = useRef(null);
   const crossfadeTimer  = useRef(null);
+  const [slideX,   setSlideX]   = useState('0%');
+  const [slideTx,  setSlideTx]  = useState('none');
+
+  useEffect(() => {
+    if (slidePhase === 'exit') {
+      setSlideTx('transform 0.35s ease-in');
+      setSlideX('-100vw');
+    } else if (slidePhase === 'enter') {
+      setSlideTx('none');
+      setSlideX('100vw');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setSlideTx('transform 0.35s ease-out');
+        setSlideX('0%');
+      }));
+    } else {
+      setSlideTx('none');
+      setSlideX('0%');
+    }
+  }, [slidePhase]);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [mediaSwapped,   setMediaSwapped]   = useState(false);
 
@@ -111,7 +130,7 @@ export default function GameScreen({
       </div>
 
       {/* ── Middle: 3-column layout ── */}
-      <div style={{ width: '100%', maxWidth: 1280, display: 'flex', gap: 20, alignItems: 'center', flex: 1 }}>
+      <div style={{ width: '100%', maxWidth: 1280, display: 'flex', gap: 20, alignItems: 'center', flex: 1, overflow: 'hidden' }}>
 
         {/* Left: Lifelines */}
         <div style={{
@@ -132,7 +151,11 @@ export default function GameScreen({
         </div>
 
         {/* Center: Question card + Answer grid + Controls */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{
+          flex: 1, display: 'flex', flexDirection: 'column', gap: 14,
+          transform: `translateX(${slideX})`,
+          transition: slideTx,
+        }}>
 
           {/* Question card */}
           <div style={{

@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/DarePreview.png
-video: https://www.youtube.com/watch?v=p-D1L9_x2Ys&t=80s
+answer_video: https://www.youtube.com/watch?v=p-D1L9_x2Ys&t=80s
 ---
 
 # Welke Just Dance dans kent Leonora uit haar hoofd?

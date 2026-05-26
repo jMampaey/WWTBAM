@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/LeoTiltHamu.jpg
-# video: /media/videos/NationalGeographic.MP4
+answer_video: /media/videos/NationalGeographic.MP4
 ---
 
 # Wat ging Leonora kijken toen ze de gewone films en series zat was?

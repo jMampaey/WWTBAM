@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/WondZwartWit.JPEG
-# video: /media/videos/TeringDom.MP4
+answer_video: /media/videos/TeringDom.MP4
 ---
 
 # Op welke manier heeft Leonora **géén** litteken opgelopen?

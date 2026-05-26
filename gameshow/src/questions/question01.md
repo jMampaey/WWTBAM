@@ -2,7 +2,7 @@
 timer: 10
 difficulty: 3
 image: /media/images/PippiLangkous.JPEG
-# image: /media/images/Collage.png
+answer_image: /media/images/Collage.png
 ---
 
 # Hoe heeft Leonora er **niet** uit gezien?

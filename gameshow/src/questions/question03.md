@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/KomkommerBeugel.jpg
-# video: /media/videos/Glamping.MP4
+answer_video: /media/videos/Glamping.MP4
 ---
 
 # Welke van deze uitspraken is van Leonora?

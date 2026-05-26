@@ -1,14 +1,15 @@
 ---
-timer: 10
-difficulty: 1
-image: /media/images/bonus.jpg
+timer: 30
+difficulty: 3
+video: /media/videos/MummuKnuffel.MP4
+# image: /media/images/SiblingsSchommelstoel.JPEG
 ---
 
-# Is dit de *bonus* vraag?
+# Hoeveel besties heeft Leonora inmiddels meegenomen naar mummu in Finland?
 
-A) Ja
-B) Nee
-C) Ik heb geen bonusvraag nodig
-D) Wat is een bonusvraag?
+A) 2
+B) 4
+C) 5
+D) 7
 
 correct: C

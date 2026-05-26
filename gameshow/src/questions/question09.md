@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 video: /media/videos/JuliaLaatLeoSchrikken.MOV
-# video: /media/videos/LeoLaatJuliaSchrikken.mov
+answer_video: /media/videos/LeoLaatJuliaSchrikken.mov
 ---
 
 # Wat gebeurt hierna?

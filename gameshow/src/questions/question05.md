@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/GeilInNatuur.JPEG
-# image: /media/images/WintersportSelfie.JPEG
+answer_image: /media/images/WintersportSelfie.JPEG
 ---
 
 # Welke bijnaam heeft Leonora **niet**?

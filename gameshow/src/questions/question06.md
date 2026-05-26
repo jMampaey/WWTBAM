@@ -2,7 +2,7 @@
 timer: 30
 difficulty: 3
 image: /media/images/Piparkakkutalo.JPEG
-# video: /media/videos/AssaMix.MP4
+answer_video: /media/videos/AssaMix.MP4
 ---
 
 # Wat vindt Leonora **niet** lekker?

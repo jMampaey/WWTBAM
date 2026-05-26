@@ -25,11 +25,35 @@ export default function GameScreen({
   const isLast     = qIdx + 1 >= questions.length;
   const ptsAvail   = usedLifeline ? Math.floor(q.points / 2) : q.points;
   const maxScore   = questions.reduce((sum, qq) => sum + qq.points, 0);
-  const videoRef   = useRef(null);
+  const videoRef        = useRef(null);
+  const crossfadeTimer  = useRef(null);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [mediaSwapped,   setMediaSwapped]   = useState(false);
 
   useEffect(() => {
     if (videoStarted && videoRef.current) videoRef.current.play();
   }, [videoStarted]);
+
+  useEffect(() => {
+    clearTimeout(crossfadeTimer.current);
+    if (phase === 'revealed' && (q?.answerImage || q?.answerVideo)) {
+      setMediaSwapped(false);
+      setOverlayOpacity(0);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setOverlayOpacity(1);
+        crossfadeTimer.current = setTimeout(() => {
+          setMediaSwapped(true);  // swap while overlay is still fully black
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => setOverlayOpacity(0))  // fade out only after new media is painted
+          );
+        }, 600);
+      }));
+    } else {
+      setMediaSwapped(false);
+      setOverlayOpacity(0);
+    }
+    return () => clearTimeout(crossfadeTimer.current);
+  }, [phase]);
 
   return (
     <div style={PAGE}>
@@ -128,35 +152,47 @@ export default function GameScreen({
               </span>
             </div>
 
-            {(() => {
-              const showAnswerMedia = phase === 'revealed' && (q.answerImage || q.answerVideo);
-              const img = showAnswerMedia ? q.answerImage : q.image;
-              const vid = showAnswerMedia ? q.answerVideo : q.video;
-              return (<>
-                {img && (
-                  <img src={img} alt="" style={{
-                    width: '100%', height: 400, objectFit: 'contain',
-                    background: '#000', borderRadius: 10, marginBottom: 16, display: 'block',
-                  }} />
-                )}
-                {vid && (
-                  isYouTube(vid)
-                    ? <iframe
-                        src={showAnswerMedia ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
-                        title="question-video" allow="autoplay" style={{
-                          width: '100%', height: 400, border: 'none',
-                          borderRadius: 10, marginBottom: 16, display: 'block',
-                        }} allowFullScreen />
-                    : <video
-                        ref={showAnswerMedia ? undefined : videoRef}
-                        src={vid}
-                        autoPlay={showAnswerMedia}
-                        style={{
-                          width: '100%', maxHeight: 400, borderRadius: 10,
-                          marginBottom: 16, display: 'block', background: '#000',
-                        }} />
-                )}
-              </>);
+            {/* Media container — crossfades question → answer via black overlay */}
+            {(q.image || q.video || q.answerImage || q.answerVideo) && (() => {
+              const hasAnswerMedia = q.answerImage || q.answerVideo;
+              const showAnswer = mediaSwapped && hasAnswerMedia;
+              const img = showAnswer ? q.answerImage : q.image;
+              const vid = showAnswer ? q.answerVideo : q.video;
+              return (
+                <div style={{ position: 'relative', marginBottom: 16 }}>
+                  {img && (
+                    <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
+                      width: '100%', height: 400, objectFit: 'contain',
+                      background: '#000', borderRadius: 10, display: 'block',
+                    }} />
+                  )}
+                  {vid && (
+                    isYouTube(vid)
+                      ? <iframe
+                          key={showAnswer ? 'answer' : 'question'}
+                          src={showAnswer ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
+                          title="video" allow="autoplay" style={{
+                            width: '100%', height: 400, border: 'none',
+                            borderRadius: 10, display: 'block',
+                          }} allowFullScreen />
+                      : <video
+                          key={showAnswer ? 'answer' : 'question'}
+                          ref={showAnswer ? undefined : videoRef}
+                          src={vid} autoPlay={showAnswer} style={{
+                            width: '100%', maxHeight: 400, borderRadius: 10,
+                            display: 'block', background: '#000',
+                          }} />
+                  )}
+                  {hasAnswerMedia && (
+                    <div style={{
+                      position: 'absolute', inset: 0, borderRadius: 10,
+                      background: '#000', pointerEvents: 'none',
+                      opacity: overlayOpacity,
+                      transition: 'opacity 0.5s ease',
+                    }} />
+                  )}
+                </div>
+              );
             })()}
 
             <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>

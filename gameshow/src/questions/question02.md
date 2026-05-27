@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/Disneyland.jpg
 answer_image: /media/images/BeatrixlaanHandInHand.JPEG
 ---

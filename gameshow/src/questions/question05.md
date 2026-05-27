@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/GeilInNatuur.JPEG
 answer_image: /media/images/WintersportSelfie.JPEG
 ---
@@ -9,7 +7,7 @@ answer_image: /media/images/WintersportSelfie.JPEG
 
 A) Spekbeenie
 B) Lole
-C) Mini Kopenhagen
-D) Dora
+C) Nora
+D) Mini Kopenhagen
 
 correct: C

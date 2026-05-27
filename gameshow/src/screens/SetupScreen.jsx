@@ -1,4 +1,4 @@
-import { DIFF_COLORS, DIFF_LABELS, MD_EXAMPLE } from '../constants';
+import { MD_EXAMPLE } from '../constants';
 
 const PAGE = {
   minHeight: '100vh',
@@ -64,9 +64,6 @@ export default function SetupScreen({ questions, playerName, setPlayerName, star
                     {i + 1}. {q.question}
                   </span>
                   <div style={{ flexShrink: 0, display: 'flex', gap: 6, alignItems: 'center' }}>
-                    <span style={{ background: DIFF_COLORS[q.difficulty], color: '#000', padding: '2px 8px', borderRadius: 9999, fontSize: 11, fontWeight: 800 }}>
-                      {DIFF_LABELS[q.difficulty]}
-                    </span>
                     <span style={{ color: '#f59e0b', fontSize: 12, fontWeight: 700 }}>{q.points}pt</span>
                     <span style={{ color: '#475569', fontSize: 11 }}>⏱{q.timer}s</span>
                   </div>

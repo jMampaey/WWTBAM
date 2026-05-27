@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/DarePreview.png
 answer_video: /media/videos/Dare.mov
 ---

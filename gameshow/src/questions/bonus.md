@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 video: /media/videos/MummuKnuffel.MP4
 answer_image: /media/images/SiblingsSchommelstoel.JPEG
 ---

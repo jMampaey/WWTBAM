@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/WondZwartWit.JPEG
 answer_video: /media/videos/TeringDom.MP4
 ---

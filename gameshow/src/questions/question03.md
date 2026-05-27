@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/KomkommerBeugel.jpg
 answer_video: /media/videos/Glamping.MP4
 ---

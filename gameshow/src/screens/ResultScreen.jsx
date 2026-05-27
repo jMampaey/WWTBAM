@@ -96,14 +96,6 @@ function ScorePot({ score, maxScore }) {
         ))}
       </div>
 
-      {/* Pot rim */}
-      <div style={{
-        width: 120, height: 10,
-        background: 'linear-gradient(135deg,#1e3a8a,#2563eb44)',
-        border: '2px solid #1e3a8a',
-        borderRadius: 5,
-        marginTop: -18,
-      }} />
     </div>
   );
 }

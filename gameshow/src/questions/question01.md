@@ -1,6 +1,4 @@
 ---
-timer: 10
-difficulty: 3
 image: /media/images/PippiLangkous.JPEG
 answer_image: /media/images/Collage.png
 ---

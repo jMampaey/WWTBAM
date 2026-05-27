@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import OptionBtn from '../components/OptionBtn';
-import { DIFF_COLORS, DIFF_LABELS } from '../constants';
 
 const PAGE = {
   minHeight: '100vh',
@@ -117,13 +116,7 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
           border: '2px solid #b45309', borderRadius: 18, padding: '26px 30px',
           boxShadow: '0 0 40px #f59e0b22, inset 0 1px 0 #f59e0b18',
         }}>
-          <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <span style={{
-              background: DIFF_COLORS[q.difficulty], color: '#000',
-              padding: '5px 16px', borderRadius: 9999, fontSize: 14, fontWeight: 900,
-            }}>
-              {DIFF_LABELS[q.difficulty]}
-            </span>
+          <div style={{ marginBottom: 12 }}>
             <span style={{ color: '#f59e0b', fontSize: 14, fontWeight: 700 }}>
               🏆 {maxPossible.toLocaleString()} pts — full pot!
             </span>
@@ -187,12 +180,31 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
         </span>
         <div style={{ flex: 1 }} />
         {phase === 'revealed' && bonusWon !== null && (
-          <span style={{
-            fontWeight: 900, fontSize: '1.1rem',
-            color: bonusWon ? '#4ade80' : '#f87171',
-          }}>
+          <span style={{ fontWeight: 900, fontSize: '1.1rem', color: bonusWon ? '#4ade80' : '#f87171' }}>
             {bonusWon ? '🏆 Bonus won! Full pot of gold!' : '😞 Bonus missed!'}
           </span>
+        )}
+        {(phase === 'selected' || phase === 'timeout') && (
+          <ActionBtn
+            onClick={() => {
+              const won = selected === q.correct;
+              setBonusWon(won);
+              setPhase('revealed');
+              setTimerOn(false);
+              if (won) setScore(maxPossible);
+            }}
+            gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55"
+          >
+            {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
+          </ActionBtn>
+        )}
+        {phase === 'revealed' && (
+          <ActionBtn
+            onClick={() => { setBonusAttempted(true); setScreen('result'); }}
+            gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855"
+          >
+            Continue →
+          </ActionBtn>
         )}
       </div>
 
@@ -204,6 +216,18 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
+function ActionBtn({ children, onClick, gradient, glow }) {
+  return (
+    <button onClick={onClick} style={{
+      background: gradient, color: '#fff', border: 'none', borderRadius: 12,
+      padding: '16px 36px', fontSize: '1.2rem', fontWeight: 900,
+      cursor: 'pointer', letterSpacing: '0.04em', boxShadow: `0 0 20px ${glow}`,
+    }}>
+      {children}
+    </button>
+  );
+}
 
 function RichText({ text }) {
   const tokens = [];

@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import OptionBtn from '../components/OptionBtn';
-import { DIFF_COLORS, DIFF_LABELS } from '../constants';
+
 
 const PAGE = {
   minHeight: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  padding: '20px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 14, overflowX: 'hidden',
+  padding: '4px 24px 72px 24px',
+  boxSizing: 'border-box', gap: 4, overflowX: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -111,7 +111,7 @@ export default function GameScreen({
       )}
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 1280, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Player</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -130,7 +130,7 @@ export default function GameScreen({
       </div>
 
       {/* ── Middle: 3-column layout ── */}
-      <div style={{ width: '100%', maxWidth: 1280, display: 'flex', gap: 20, alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+      <div style={{ width: '100%', maxWidth: 1600, display: 'flex', gap: 20, alignItems: 'center', flex: 1, overflow: 'hidden' }}>
 
         {/* Left: Lifelines */}
         <div style={{
@@ -150,133 +150,149 @@ export default function GameScreen({
           )}
         </div>
 
-        {/* Center: Question card + Answer grid + Controls */}
+        {/* Center column — slide applied per-section */}
         <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column', gap: 14,
-          transform: `translateX(${slideX})`,
-          transition: slideTx,
+          flex: 1, display: 'flex', flexDirection: 'column', gap: 32,
         }}>
 
-          {/* Question card */}
-          <div style={{
-            width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
-            border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
-            boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
-          }}>
-            <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <span style={{
-                background: DIFF_COLORS[q.difficulty], color: '#000',
-                padding: '5px 16px', borderRadius: 9999, fontSize: 14, fontWeight: 900,
+          {/* Question card + Score side by side */}
+          <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
+
+            {/* Sliding question card */}
+            <div style={{
+              flex: 1,
+              transform: `translateX(${slideX})`,
+              transition: slideTx,
+            }}>
+              <div style={{
+                width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
+                border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
+                boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
+                height: '100%', boxSizing: 'border-box',
               }}>
-                {DIFF_LABELS[q.difficulty]}
-              </span>
-              <span style={{ color: '#475569', fontSize: 16 }}>
-                {ptsAvail.toLocaleString()} pts{usedLifeline ? ' (lifeline active)' : ''}
-              </span>
+
+                {/* Media container — crossfades question → answer via black overlay */}
+                {(q.image || q.video || q.answerImage || q.answerVideo) && (() => {
+                  const hasAnswerMedia = q.answerImage || q.answerVideo;
+                  const showAnswer = mediaSwapped && hasAnswerMedia;
+                  const img = showAnswer ? q.answerImage : q.image;
+                  const vid = showAnswer ? q.answerVideo : q.video;
+                  return (
+                    <div style={{ position: 'relative', marginBottom: 16 }}>
+                      {img && (
+                        <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
+                          width: '100%', height: 550, objectFit: 'contain',
+                          background: '#000', borderRadius: 10, display: 'block',
+                        }} />
+                      )}
+                      {vid && (
+                        isYouTube(vid)
+                          ? <iframe
+                              key={showAnswer ? 'answer' : 'question'}
+                              src={showAnswer ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
+                              title="video" allow="autoplay" style={{
+                                width: '100%', height: 400, border: 'none',
+                                borderRadius: 10, display: 'block',
+                              }} allowFullScreen />
+                          : <video
+                              key={showAnswer ? 'answer' : 'question'}
+                              ref={showAnswer ? undefined : videoRef}
+                              src={vid} autoPlay={showAnswer} style={{
+                                width: '100%', maxHeight: 550, borderRadius: 10,
+                                display: 'block', background: '#000',
+                              }} />
+                      )}
+                      {hasAnswerMedia && (
+                        <div style={{
+                          position: 'absolute', inset: 0, borderRadius: 10,
+                          background: '#000', pointerEvents: 'none',
+                          opacity: overlayOpacity,
+                          transition: 'opacity 0.5s ease',
+                        }} />
+                      )}
+                    </div>
+                  );
+                })()}
+
+                <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                  <RichText text={q.question} />
+                </p>
+              </div>
             </div>
 
-            {/* Media container — crossfades question → answer via black overlay */}
-            {(q.image || q.video || q.answerImage || q.answerVideo) && (() => {
-              const hasAnswerMedia = q.answerImage || q.answerVideo;
-              const showAnswer = mediaSwapped && hasAnswerMedia;
-              const img = showAnswer ? q.answerImage : q.image;
-              const vid = showAnswer ? q.answerVideo : q.video;
-              return (
-                <div style={{ position: 'relative', marginBottom: 16 }}>
-                  {img && (
-                    <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
-                      width: '100%', height: 400, objectFit: 'contain',
-                      background: '#000', borderRadius: 10, display: 'block',
-                    }} />
-                  )}
-                  {vid && (
-                    isYouTube(vid)
-                      ? <iframe
-                          key={showAnswer ? 'answer' : 'question'}
-                          src={showAnswer ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
-                          title="video" allow="autoplay" style={{
-                            width: '100%', height: 400, border: 'none',
-                            borderRadius: 10, display: 'block',
-                          }} allowFullScreen />
-                      : <video
-                          key={showAnswer ? 'answer' : 'question'}
-                          ref={showAnswer ? undefined : videoRef}
-                          src={vid} autoPlay={showAnswer} style={{
-                            width: '100%', maxHeight: 400, borderRadius: 10,
-                            display: 'block', background: '#000',
-                          }} />
-                  )}
-                  {hasAnswerMedia && (
-                    <div style={{
-                      position: 'absolute', inset: 0, borderRadius: 10,
-                      background: '#000', pointerEvents: 'none',
-                      opacity: overlayOpacity,
-                      transition: 'opacity 0.5s ease',
-                    }} />
-                  )}
+            {/* Score (static, no slide) */}
+            <div style={{
+              width: 180, flexShrink: 0,
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
+                  <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
+                  <ScorePot score={score} maxScore={maxScore} />
+                  <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
+                    {score.toLocaleString()}
+                  </div>
                 </div>
-              );
-            })()}
+              </div>
+            </div>
 
-            <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
-              <RichText text={q.question} />
-            </p>
           </div>
 
-          {/* Answer grid */}
-          <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            {optLetters.map((letter, i) => (
-              <OptionBtn
-                key={letter} letter={letter} text={q.options[letter]}
-                phase={phase} selected={selected} correct={q.correct}
-                eliminated={eliminated} onClick={selectOpt}
-                hidden={i >= revealedCount}
-              />
-            ))}
+          {/* Sliding answers + controls — right spacer matches score width */}
+          <div style={{
+            display: 'flex', gap: 20,
+            transform: `translateX(${slideX})`,
+            transition: slideTx,
+          }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
+
+            {/* Answer grid */}
+            <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              {optLetters.map((letter, i) => (
+                <OptionBtn
+                  key={letter} letter={letter} text={q.options[letter]}
+                  phase={phase} selected={selected} correct={q.correct}
+                  eliminated={eliminated} onClick={selectOpt}
+                  hidden={i >= revealedCount}
+                />
+              ))}
+            </div>
+
+            {/* Controls bar */}
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{ color: '#1e3a8a', fontSize: 15 }}>
+                {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
+                {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
+                {phase === 'revealing' && revealedCount < optLetters.length  && 'Space — reveal next option'}
+                {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
+                {phase === 'playing'                           && 'Press A B C D to select'}
+                {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
+                {phase === 'revealed'                          && 'Press Enter for next'}
+              </span>
+              <div style={{ flex: 1 }} />
+              {(phase === 'selected' || phase === 'timeout') && (
+                <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
+                  {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
+                </ActionBtn>
+              )}
+              {phase === 'revealed' && (
+                <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
+                  {isLast ? '🏁 Final Results' : 'Next →'}
+                </ActionBtn>
+              )}
+            </div>
+
+          </div>
+          <div style={{ width: 180, flexShrink: 0 }} />{/* spacer: matches score width */}
+
           </div>
 
-          {/* Controls bar */}
-          <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ color: '#1e3a8a', fontSize: 15 }}>
-              {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
-              {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
-              {phase === 'revealing' && revealedCount < optLetters.length  && 'Space — reveal next option'}
-              {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
-              {phase === 'playing'                           && 'Press A B C D to select'}
-              {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
-              {phase === 'revealed'                          && 'Press Enter for next'}
-            </span>
-            <div style={{ flex: 1 }} />
-            {(phase === 'selected' || phase === 'timeout') && (
-              <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
-                {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
-              </ActionBtn>
-            )}
-            {phase === 'revealed' && (
-              <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
-                {isLast ? '🏁 Final Results' : 'Next →'}
-              </ActionBtn>
-            )}
-          </div>
-
-        </div>
-
-        {/* Right: Score pot */}
-        <div style={{
-          width: 180, flexShrink: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10,
-        }}>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-          <ScorePot score={score} maxScore={maxScore} />
-          <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
-            {score.toLocaleString()}
-          </div>
         </div>
 
       </div>
 
       {/* ── Timer bar ── */}
-      <TimerBar timeLeft={timeLeft} total={q.timer} timerOn={timerOn} />
+      <TimerBar timeLeft={timeLeft} total={q.timer} timerOn={timerOn} qIdx={qIdx} />
 
     </div>
   );
@@ -291,24 +307,35 @@ function lerpColor(a, b, t) {
   return [Math.round(ar+(br-ar)*t), Math.round(ag+(bg-ag)*t), Math.round(ab+(bb-ab)*t)];
 }
 
-function TimerBar({ timeLeft, total, timerOn }) {
+function TimerBar({ timeLeft, total, timerOn, qIdx }) {
   const [displayPct, setDisplayPct] = useState(timeLeft / total);
   const rafRef   = useRef(null);
-  const stateRef = useRef({ pct: timeLeft / total, lastTs: null });
+  const stateRef = useRef({ pct: timeLeft / total, lastTs: null, resetting: false });
 
-  // When timer starts/resumes, sync pct to current timeLeft
+  // Smooth fill-to-full when question changes
+  useEffect(() => {
+    stateRef.current.resetting = true;
+    stateRef.current.lastTs    = null;
+  }, [qIdx]);
+
+  // When timer starts, stop reset and sync to current timeLeft
   useEffect(() => {
     if (timerOn) {
-      stateRef.current.pct    = timeLeft / total;
-      stateRef.current.lastTs = null;
+      stateRef.current.resetting = false;
+      stateRef.current.pct       = timeLeft / total;
+      stateRef.current.lastTs    = null;
     }
   }, [timerOn]);
 
   useEffect(() => {
+    const FILL_SPEED = 1 / 0.35; // fills from 0 to full in ~350ms
     const animate = now => {
       const dt = stateRef.current.lastTs ? (now - stateRef.current.lastTs) / 1000 : 0;
       stateRef.current.lastTs = now;
-      if (timerOn) {
+      if (stateRef.current.resetting) {
+        stateRef.current.pct = Math.min(1, stateRef.current.pct + dt * FILL_SPEED);
+        if (stateRef.current.pct >= 1) stateRef.current.resetting = false;
+      } else if (timerOn) {
         stateRef.current.pct = Math.max(0, stateRef.current.pct - dt / total);
       }
       setDisplayPct(stateRef.current.pct);
@@ -389,12 +416,12 @@ function ScorePot({ score, maxScore }) {
   const fillH = `${pct * 100}%`;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 }}>
       <span style={{ fontSize: '1.6rem' }}>🪙</span>
 
       {/* Pot body */}
       <div style={{
-        position: 'relative', width: 64, height: 200,
+        position: 'relative', width: 64, flex: 1, minHeight: 80,
         background: '#080e1a',
         border: '2px solid #1e3a8a',
         borderRadius: '10px 10px 32px 32px',
@@ -426,14 +453,6 @@ function ScorePot({ score, maxScore }) {
         ))}
       </div>
 
-      {/* Pot rim */}
-      <div style={{
-        width: 80, height: 8,
-        background: 'linear-gradient(135deg,#1e3a8a,#2563eb44)',
-        border: '2px solid #1e3a8a',
-        borderRadius: 4,
-        marginTop: -14,
-      }} />
     </div>
   );
 }

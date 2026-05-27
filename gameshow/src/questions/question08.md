@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 image: /media/images/LeoTiltHamu.jpg
 answer_video: /media/videos/NationalGeographic.MP4
 ---

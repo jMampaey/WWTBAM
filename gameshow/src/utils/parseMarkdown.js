@@ -43,7 +43,7 @@ export function parseMarkdown(filename, text) {
     question:   qLines.join(' ').trim(),
     options:    opts,
     correct,
-    timer:      Math.max(5, parseInt(meta.timer) || 30),
+    timer:      Math.max(5, parseInt(meta.timer) || 20),
     difficulty: diff,
     points:     DIFF_POINTS[diff],
     image:       meta.image || null,

@@ -1,6 +1,4 @@
 ---
-timer: 30
-difficulty: 3
 video: /media/videos/JuliaLaatLeoSchrikken.MOV
 answer_video: /media/videos/LeoLaatJuliaSchrikken.mov
 ---

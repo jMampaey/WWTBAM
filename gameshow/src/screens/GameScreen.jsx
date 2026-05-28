@@ -7,8 +7,8 @@ const PAGE = {
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  padding: '4px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 4, overflowX: 'hidden',
+  padding: '32px 24px 72px 24px',
+  boxSizing: 'border-box', gap: 32, overflowX: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -17,8 +17,8 @@ export default function GameScreen({
   q, qIdx, questions, playerName, score,
   phase, selected, timeLeft, timerOn, eliminated, lifelines, usedLifeline,
   revealedCount, videoStarted, slidePhase,
-  phoneOpen, setPhoneOpen,
-  selectOpt, reveal, next, do50, doPhone,
+  phoneOpen, setPhoneOpen, familyOpen, setFamilyOpen,
+  selectOpt, reveal, next, do50, doPhone, doFamily,
 }) {
   if (!q) return null;
   const optLetters = ['A','B','C','D'].filter(l => q.options[l]);
@@ -110,10 +110,43 @@ export default function GameScreen({
         </div>
       )}
 
+      {/* ── Phone a Family Member overlay ── */}
+      {familyOpen && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999,
+        }}>
+          <div style={{
+            background: '#0d1b3e', border: '2px solid #3b82f6', borderRadius: 24,
+            padding: '48px 40px', textAlign: 'center', maxWidth: 400,
+            boxShadow: '0 0 60px #3b82f655',
+          }}>
+            <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>👨‍👩‍👧</div>
+            <h3 style={{ fontSize: '1.6rem', margin: '0 0 10px', fontWeight: 900 }}>Phone a Family Member</h3>
+            <p style={{ color: '#64748b', margin: '0 0 8px' }}>Timer is paused.</p>
+            <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 20px', lineHeight: 1.6 }}>
+              Consult your family member, then resume when ready.
+            </p>
+            <div style={{ background: '#1e293b', borderRadius: 10, padding: '10px 16px', marginBottom: 24 }}>
+              <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>
+                ⚠ Score for this question is halved
+              </span>
+            </div>
+            <button onClick={() => setFamilyOpen(false)} style={{
+              background: 'linear-gradient(135deg,#2563eb,#7c3aed)', color: '#fff',
+              border: 'none', borderRadius: 12, padding: '14px 36px',
+              fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
+            }}>
+              Resume ▶
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Header ── */}
       <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
         <div>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Player</div>
+          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -121,42 +154,41 @@ export default function GameScreen({
             fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
             background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          }}>Who wants to be a miLEOnaire?</h2>
+          }}>Who wants to be a milLEOnaire?</h2>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Question</div>
+          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Vraag</div>
           <div style={{ fontWeight: 700, fontSize: '1.6rem' }}>{qIdx + 1} / {questions.length}</div>
         </div>
       </div>
 
-      {/* ── Middle: 3-column layout ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'flex', gap: 20, alignItems: 'center', flex: 1, overflow: 'hidden' }}>
+      {/* ── Middle ── */}
+      <div style={{ width: '100%', maxWidth: 1600, overflow: 'hidden' }}>
 
-        {/* Left: Lifelines */}
-        <div style={{
-          width: 180, flexShrink: 0,
-          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
-          paddingTop: 6,
-        }}>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
-            Lifelines
-          </div>
-          <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
-            title="Remove 2 wrong answers — halves score for this question" />
-          <LifelineBtn label="📞 Phone" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
-            title="Pause timer, consult a friend — halves score for this question" />
-          {usedLifeline && (phase === 'playing' || phase === 'selected') && (
-            <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>½ score active</span>
-          )}
-        </div>
+        {/* Center column */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
 
-        {/* Center column — slide applied per-section */}
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column', gap: 32,
-        }}>
-
-          {/* Question card + Score side by side */}
+          {/* Row 1: Lifelines + Question card + Score */}
           <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
+
+            {/* Left: Lifelines */}
+            <div style={{
+              width: 180, flexShrink: 0, alignSelf: 'center',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
+            }}>
+              <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+                Hulplijnen
+              </div>
+              <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
+                title="Remove 2 wrong answers — halves score for this question" />
+              <LifelineBtn label="📞 Friend" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
+                title="Pause timer, consult a friend — halves score for this question" />
+              <LifelineBtn label="📞 Family" active={lifelines.family} disabled={phase !== 'playing'} onClick={doFamily}
+                title="Pause timer, consult a family member — halves score for this question" />
+              {usedLifeline && (phase === 'playing' || phase === 'selected') && (
+                <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>½ score active</span>
+              )}
+            </div>
 
             {/* Sliding question card */}
             <div style={{
@@ -181,7 +213,7 @@ export default function GameScreen({
                     <div style={{ position: 'relative', marginBottom: 16 }}>
                       {img && (
                         <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
-                          width: '100%', height: 550, objectFit: 'contain',
+                          width: '100%', height: 680, objectFit: 'contain',
                           background: '#000', borderRadius: 10, display: 'block',
                         }} />
                       )}
@@ -198,7 +230,7 @@ export default function GameScreen({
                               key={showAnswer ? 'answer' : 'question'}
                               ref={showAnswer ? undefined : videoRef}
                               src={vid} autoPlay={showAnswer} style={{
-                                width: '100%', maxHeight: 550, borderRadius: 10,
+                                width: '100%', maxHeight: 680, borderRadius: 10,
                                 display: 'block', background: '#000',
                               }} />
                       )}
@@ -238,12 +270,13 @@ export default function GameScreen({
 
           </div>
 
-          {/* Sliding answers + controls — right spacer matches score width */}
+          {/* Row 2: Left spacer + Answers + Right spacer */}
           <div style={{
             display: 'flex', gap: 20,
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
+          <div style={{ width: 180, flexShrink: 0 }} />{/* left spacer: matches lifelines width */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
 
             {/* Answer grid */}
@@ -272,12 +305,12 @@ export default function GameScreen({
               <div style={{ flex: 1 }} />
               {(phase === 'selected' || phase === 'timeout') && (
                 <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
-                  {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
+                  {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Antwoord tonen'}
                 </ActionBtn>
               )}
               {phase === 'revealed' && (
                 <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
-                  {isLast ? '🏁 Final Results' : 'Next →'}
+                  {isLast ? '🏁 Final Results' : 'Verder →'}
                 </ActionBtn>
               )}
             </div>

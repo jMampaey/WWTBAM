@@ -1,4 +1,4 @@
-export const DIFF_POINTS = { 1: 100, 2: 250, 3: 500, 4: 1000, 5: 2000 };
+export const DIFF_POINTS = { 1: 100000, 2: 250000, 3: 500000, 4: 1000000, 5: 2000000 };
 export const DIFF_LABELS = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Jackpot' };
 export const DIFF_COLORS = { 1: '#22c55e', 2: '#84cc16', 3: '#eab308', 4: '#f97316', 5: '#ef4444' };
 

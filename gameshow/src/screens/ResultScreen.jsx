@@ -30,7 +30,7 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         textAlign: 'center',
       }}>
-        Who wants to be a miLEOnaire?
+        Who wants to be a milLEOnaire?
       </h1>
 
       {/* ── Pot of gold ── */}

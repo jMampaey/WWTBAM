@@ -91,7 +91,7 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
           fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0,
           background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-        }}>Who wants to be a miLEOnaire?</h2>
+        }}>Who wants to be a milLEOnaire?</h2>
       </div>
 
       {/* ── Bonus badge ── */}
@@ -195,7 +195,7 @@ export default function BonusScreen({ bonusQ, scoreLog, setScore, setScreen, set
             }}
             gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55"
           >
-            {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Reveal Answer'}
+            {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Antwoord tonen'}
           </ActionBtn>
         )}
         {phase === 'revealed' && (

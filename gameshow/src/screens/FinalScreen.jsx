@@ -17,7 +17,7 @@ export default function FinalScreen() {
         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         textAlign: 'center',
       }}>
-        Who wants to be a miLEOnaire?
+        Who wants to be a milLEOnaire?
       </h1>
 
       {/* ── Answer text ── */}

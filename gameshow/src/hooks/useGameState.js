@@ -37,7 +37,7 @@ export function useGameState() {
   const [bonusAttempted, setBonusAttempted] = useState(false);
   const [screen, setScreen] = useState('setup');
   const [questions, setQuestions] = useState([]);
-  const [playerName, setPlayerName] = useState('Lucas a.k.a. Future miLEOnaire');
+  const [playerName, setPlayerName] = useState('Lucas');
   const [qIdx, setQIdx] = useState(0);
   const [phase, setPhase] = useState('revealing');
   const [revealedCount, setRevealedCount] = useState(0);
@@ -47,8 +47,9 @@ export function useGameState() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [timerOn, setTimerOn] = useState(false);
   const [phoneOpen, setPhoneOpen] = useState(false);
+  const [familyOpen, setFamilyOpen] = useState(false);
   const [eliminated, setEliminated] = useState([]);
-  const [lifelines, setLifelines] = useState({ fifty: true, phone: true });
+  const [lifelines, setLifelines] = useState({ fifty: true, phone: true, family: true });
   const [usedLifeline, setUsedLifeline] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
   const [slidePhase, setSlidePhase] = useState(null);
@@ -68,7 +69,7 @@ export function useGameState() {
   useEffect(() => {
     clearInterval(timerRef.current);
 
-    if (timerOn && !phoneOpen) {
+    if (timerOn && !phoneOpen && !familyOpen) {
       timerRef.current = setInterval(() => {
         setTimeLeft(t => {
           if (t <= 1) {
@@ -83,7 +84,7 @@ export function useGameState() {
     }
 
     return () => clearInterval(timerRef.current);
-  }, [timerOn, phoneOpen]);
+  }, [timerOn, phoneOpen, familyOpen]);
 
   // ── Keyboard shortcuts ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -184,7 +185,7 @@ export function useGameState() {
     setPhase(qPhase(questions[0])); setRevealedCount(0);
     setVideoStarted(false);
     setSelected(null); setEliminated([]);
-    setPhoneOpen(false); setLifelines({ fifty: true, phone: true });
+    setPhoneOpen(false); setFamilyOpen(false); setLifelines({ fifty: true, phone: true, family: true });
     setUsedLifeline(false);
     setTimeLeft(questions[0]?.timer ?? 30);
     setTimerOn(false);
@@ -213,15 +214,22 @@ export function useGameState() {
     setUsedLifeline(true);
   }
 
+  function doFamily() {
+    if (!lifelines.family || phase !== 'playing') return;
+    setFamilyOpen(true);
+    setLifelines(l => ({ ...l, family: false }));
+    setUsedLifeline(true);
+  }
+
   return {
     screen, questions, playerName, qIdx, phase, selected,
-    score, scoreLog, timeLeft, timerOn, phoneOpen, eliminated, lifelines, usedLifeline,
+    score, scoreLog, timeLeft, timerOn, phoneOpen, familyOpen, eliminated, lifelines, usedLifeline,
     revealedCount,
     q, bonusQ, bonusAttempted, videoStarted, slidePhase,
-    setPlayerName, setPhoneOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
+    setPlayerName, setPhoneOpen, setFamilyOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
     startGame, selectOpt,
     reveal: _reveal,
     next: _next,
-    do50, doPhone,
+    do50, doPhone, doFamily,
   };
 }

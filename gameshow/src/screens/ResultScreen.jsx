@@ -4,13 +4,14 @@ const PAGE = {
   minHeight: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
-  display: 'flex', flexDirection: 'column', alignItems: 'center',
+  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
   padding: '40px 24px 48px', boxSizing: 'border-box', gap: 40,
 };
 
 export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonusAttempted, setScreen }) {
   const maxPossible  = scoreLog.reduce((a, l) => a + l.max, 0);
   const hasBonus     = bonusQ != null && score < maxPossible && !bonusAttempted;
+  const isMillionaire = score >= maxPossible;
 
   useEffect(() => {
     const onKey = e => {
@@ -30,7 +31,7 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
         textAlign: 'center',
       }}>
-        Who wants to be a milLEOnaire?
+        {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Who wants to be a milLEOnaire?'}
       </h1>
 
       {/* ── Pot of gold ── */}
@@ -42,10 +43,12 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
       </div>
 
       {/* ── Tagline ── */}
-      <p style={{ fontSize: '1.5rem', fontWeight: 700, color: '#e2e8f0', margin: 0, textAlign: 'center' }}>
+      <p style={{ fontSize: isMillionaire ? '2.2rem' : '1.5rem', fontWeight: 700, color: '#e2e8f0', margin: 0, textAlign: 'center' }}>
         {hasBonus
           ? "Let's try a bonus question to fill the pot o' gold!"
-          : `${playerName}, what's in the pot o' gold..?`}
+          : isMillionaire
+            ? 'En wat wint deze milLEOnaire?'
+            : `${playerName}, what's in the pot o' gold..?`}
       </p>
 
 

@@ -88,23 +88,14 @@ export default function GameScreen({
             padding: '48px 40px', textAlign: 'center', maxWidth: 400,
             boxShadow: '0 0 60px #3b82f655',
           }}>
-            <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>📞</div>
-            <h3 style={{ fontSize: '1.6rem', margin: '0 0 10px', fontWeight: 900 }}>Phone a Friend</h3>
-            <p style={{ color: '#64748b', margin: '0 0 8px' }}>Timer is paused.</p>
-            <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 20px', lineHeight: 1.6 }}>
-              Consult your friend, then resume when ready.
-            </p>
-            <div style={{ background: '#1e293b', borderRadius: 10, padding: '10px 16px', marginBottom: 24 }}>
-              <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>
-                ⚠ Score for this question is halved
-              </span>
-            </div>
+            <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>👫</div>
+            <h3 style={{ fontSize: '1.6rem', margin: '0 0 24px', fontWeight: 900 }}>Phone a friend</h3>
             <button onClick={() => setPhoneOpen(false)} style={{
               background: 'linear-gradient(135deg,#2563eb,#7c3aed)', color: '#fff',
               border: 'none', borderRadius: 12, padding: '14px 36px',
               fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
             }}>
-              Resume ▶
+              Geef antwoord
             </button>
           </div>
         </div>
@@ -122,22 +113,13 @@ export default function GameScreen({
             boxShadow: '0 0 60px #3b82f655',
           }}>
             <div style={{ fontSize: '3.5rem', marginBottom: 14 }}>👨‍👩‍👧</div>
-            <h3 style={{ fontSize: '1.6rem', margin: '0 0 10px', fontWeight: 900 }}>Phone a Family Member</h3>
-            <p style={{ color: '#64748b', margin: '0 0 8px' }}>Timer is paused.</p>
-            <p style={{ color: '#94a3b8', fontSize: 14, margin: '0 0 20px', lineHeight: 1.6 }}>
-              Consult your family member, then resume when ready.
-            </p>
-            <div style={{ background: '#1e293b', borderRadius: 10, padding: '10px 16px', marginBottom: 24 }}>
-              <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>
-                ⚠ Score for this question is halved
-              </span>
-            </div>
+            <h3 style={{ fontSize: '1.6rem', margin: '0 0 24px', fontWeight: 900 }}>Phone a family member</h3>
             <button onClick={() => setFamilyOpen(false)} style={{
               background: 'linear-gradient(135deg,#2563eb,#7c3aed)', color: '#fff',
               border: 'none', borderRadius: 12, padding: '14px 36px',
               fontSize: '1rem', fontWeight: 800, cursor: 'pointer',
             }}>
-              Resume ▶
+              Geef antwoord
             </button>
           </div>
         </div>
@@ -181,13 +163,11 @@ export default function GameScreen({
               </div>
               <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
                 title="Remove 2 wrong answers — halves score for this question" />
-              <LifelineBtn label="📞 Friend" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
+              <LifelineBtn label="👫 Friend" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
                 title="Pause timer, consult a friend — halves score for this question" />
-              <LifelineBtn label="📞 Family" active={lifelines.family} disabled={phase !== 'playing'} onClick={doFamily}
+              <LifelineBtn label="👨‍👩‍👧 Family" active={lifelines.family} disabled={phase !== 'playing'} onClick={doFamily}
                 title="Pause timer, consult a family member — halves score for this question" />
-              {usedLifeline && (phase === 'playing' || phase === 'selected') && (
-                <span style={{ color: '#f59e0b', fontSize: 13, fontWeight: 700 }}>½ score active</span>
-              )}
+
             </div>
 
             {/* Sliding question card */}

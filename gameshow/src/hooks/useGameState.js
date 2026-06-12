@@ -194,6 +194,11 @@ export function useGameState() {
 
   function selectOpt(letter) {
     if ((phase !== 'playing' && phase !== 'timeout' && phase !== 'selected') || !q?.options[letter] || eliminated.includes(letter)) return;
+    if (selected === letter && phase === 'selected') {
+      setSelected(null);
+      setPhase('playing');
+      return;
+    }
     setSelected(letter);
     setPhase('selected');
   }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const PAGE = {
   minHeight: '100vh',
@@ -12,6 +12,21 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   const maxPossible  = scoreLog.reduce((a, l) => a + l.max, 0);
   const hasBonus     = bonusQ != null && score < maxPossible && !bonusAttempted;
   const isMillionaire = score >= maxPossible;
+
+  const [displayScore, setDisplayScore] = useState(0);
+  const rafRef = useRef(null);
+  useEffect(() => {
+    const DURATION = 2000;
+    const start = performance.now();
+    const animate = now => {
+      const t = Math.min(1, (now - start) / DURATION);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      setDisplayScore(Math.round(eased * score));
+      if (t < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [score]);
 
   useEffect(() => {
     const onKey = e => {
@@ -36,9 +51,9 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
 
       {/* ── Pot of gold ── */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-        <ScorePot score={score} maxScore={maxPossible} />
+        <ScorePot score={displayScore} maxScore={maxPossible} />
         <div style={{ fontWeight: 900, fontSize: '3.5rem', color: '#f59e0b', lineHeight: 1 }}>
-          {score.toLocaleString()}
+          {displayScore.toLocaleString()}
         </div>
       </div>
 
@@ -80,7 +95,6 @@ function ScorePot({ score, maxScore }) {
           height: `${pct * 100}%`,
           background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
           boxShadow: '0 0 24px #f59e0b88',
-          transition: 'height 1s cubic-bezier(0.34, 1.4, 0.64, 1)',
         }} />
         {/* Gloss sheen */}
         <div style={{

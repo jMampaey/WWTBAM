@@ -240,10 +240,7 @@ export default function GameScreen({
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flex: 1 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
                   <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-                  <ScorePot score={score} maxScore={maxScore} />
-                  <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
-                    {score.toLocaleString()}
-                  </div>
+                  <ScorePotWithNumber score={score} maxScore={maxScore} />
                 </div>
               </div>
             </div>
@@ -423,8 +420,44 @@ function RichText({ text }) {
   });
 }
 
-function ScorePot({ score, maxScore }) {
-  const pct = maxScore > 0 ? Math.min(1, score / maxScore) : 0;
+function ScorePotWithNumber({ score, maxScore }) {
+  const [displayScore, setDisplayScore] = useState(score);
+  return (
+    <>
+      <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
+      <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
+        {displayScore.toLocaleString()}
+      </div>
+    </>
+  );
+}
+
+function ScorePot({ score, maxScore, onDisplay }) {
+  const [displayScore, setDisplayScore] = useState(score);
+  const rafRef  = useRef(null);
+  const fromRef = useRef(score);
+
+  useEffect(() => {
+    const from = fromRef.current;
+    const to   = score;
+    if (from === to) return;
+    const DURATION = 1000;
+    const start = performance.now();
+    const animate = now => {
+      const t = Math.min(1, (now - start) / DURATION);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = Math.round(from + (to - from) * eased);
+      setDisplayScore(val);
+      if (onDisplay) onDisplay(val);
+      if (t < 1) rafRef.current = requestAnimationFrame(animate);
+      else fromRef.current = to;
+    };
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [score]);
+
+  const pct = maxScore > 0 ? Math.min(1, displayScore / maxScore) : 0;
   const fillH = `${pct * 100}%`;
 
   return (
@@ -446,7 +479,6 @@ function ScorePot({ score, maxScore }) {
           height: fillH,
           background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
           boxShadow: '0 0 18px #f59e0b88',
-          transition: 'height 0.7s cubic-bezier(0.34, 1.4, 0.64, 1)',
         }} />
         {/* Gloss sheen */}
         <div style={{

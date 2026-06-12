@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 const PAGE = {
   minHeight: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
@@ -7,6 +9,13 @@ const PAGE = {
 };
 
 export default function FinalScreen() {
+  const [grown, setGrown] = useState(false);
+
+  useEffect(() => {
+    const t = requestAnimationFrame(() => setGrown(true));
+    return () => cancelAnimationFrame(t);
+  }, []);
+
   return (
     <div style={PAGE}>
 
@@ -38,6 +47,8 @@ export default function FinalScreen() {
           objectFit: 'contain', background: '#000',
           borderRadius: 18,
           boxShadow: '0 0 60px #1e3a8a55',
+          transform: grown ? 'scale(1)' : 'scale(0)',
+          transition: 'transform 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       />
 

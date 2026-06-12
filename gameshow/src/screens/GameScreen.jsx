@@ -325,7 +325,7 @@ export default function GameScreen({
       </div>
 
       {/* ── Timer bar ── */}
-      <TimerBar timeLeft={timeLeft} total={q.timer} timerOn={timerOn} qIdx={qIdx} />
+      <TimerBar timeLeft={timeLeft} total={q.timer} timerOn={timerOn && !phoneOpen && !familyOpen} qIdx={qIdx} />
 
     </div>
   );
@@ -351,11 +351,10 @@ function TimerBar({ timeLeft, total, timerOn, qIdx }) {
     stateRef.current.lastTs    = null;
   }, [qIdx]);
 
-  // When timer starts, stop reset and sync to current timeLeft
+  // When timer starts/resumes, prevent dt spike on the first frame
   useEffect(() => {
     if (timerOn) {
       stateRef.current.resetting = false;
-      stateRef.current.pct       = timeLeft / total;
       stateRef.current.lastTs    = null;
     }
   }, [timerOn]);

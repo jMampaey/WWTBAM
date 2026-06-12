@@ -1,13 +1,14 @@
 ---
-video: /media/videos/JuliaLaatLeoSchrikken.MOV
-answer_video: /media/videos/LeoLaatJuliaSchrikken.mov
+video: /media/videos/MummuKnuffel.MP4
+answer_image: /media/images/SiblingsSchommelstoel.JPEG
 ---
 
-# Wat gebeurt hierna?
+# Hoeveel besties heeft Leonora inmiddels meegenomen naar mummu in Finland?
 
-A) Leonora zakt naar de grond
-B) Leonora geeft Julia een knuffel
-C) Leonora krijgt de deur in haar gezicht
-D) Leonora neemt wraak
+A) 2
+B) 4
+C) 5
+D) 7
 
-correct: D
+correct: C
+

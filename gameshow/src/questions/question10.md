@@ -1,13 +1,13 @@
 ---
-image: /media/images/WinkelwagenSiblings.JPEG
-answer_image: /media/images/PanoramaVliegveld.JPEG
+video: /media/videos/JuliaLaatLeoSchrikken.MOV
+answer_video: /media/videos/LeoLaatJuliaSchrikken.mov
 ---
 
-# Met wie is Leonora ooit getrouwd?
+# Wat gebeurt hierna?
 
-A) Julius
-B) Julian
-C) Juliëtte
-D) Julia
+A) Leonora zakt naar de grond
+B) Leonora geeft Julia een knuffel
+C) Leonora krijgt de deur in haar gezicht
+D) Leonora neemt wraak
 
 correct: D

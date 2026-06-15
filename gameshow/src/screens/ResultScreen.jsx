@@ -53,9 +53,9 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
       </h1>
 
       {/* ── Pot of gold ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: 240 }}>
         <ScorePot score={displayScore} maxScore={maxPossible} />
-        <div style={{ fontWeight: 900, fontSize: '3.5rem', color: '#f59e0b', lineHeight: 1 }}>
+        <div style={{ fontWeight: 900, fontSize: '3.5rem', color: '#f59e0b', lineHeight: 1, width: '100%', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
           {displayScore.toLocaleString()}
         </div>
       </div>

@@ -126,7 +126,7 @@ export default function GameScreen({
       )}
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -145,7 +145,7 @@ export default function GameScreen({
       </div>
 
       {/* ── Middle ── */}
-      <div style={{ width: '100%', maxWidth: 1600, overflow: 'hidden' }}>
+      <div style={{ width: '100%', maxWidth: 1600 }}>
 
         {/* Center column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -171,8 +171,9 @@ export default function GameScreen({
             </div>
 
             {/* Sliding question card */}
+            <div style={{ flex: 1, overflow: 'hidden' }}>
             <div style={{
-              flex: 1,
+              width: '100%',
               transform: `translateX(${slideX})`,
               transition: slideTx,
             }}>
@@ -231,23 +232,22 @@ export default function GameScreen({
                 </p>
               </div>
             </div>
+            </div>
 
             {/* Score (static, no slide) */}
             <div style={{
               width: 180, flexShrink: 0,
-              display: 'flex', flexDirection: 'column', alignItems: 'flex-end',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
+              marginRight: -16,
             }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', flex: 1 }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
-                  <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-                  <ScorePotWithNumber score={score} maxScore={maxScore} />
-                </div>
-              </div>
+              <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+              <ScorePotWithNumber score={score} maxScore={maxScore} />
             </div>
 
           </div>
 
           {/* Row 2: Left spacer + Answers + Right spacer */}
+          <div style={{ overflow: 'hidden' }}>
           <div style={{
             display: 'flex', gap: 20,
             transform: `translateX(${slideX})`,
@@ -295,6 +295,7 @@ export default function GameScreen({
           </div>
           <div style={{ width: 180, flexShrink: 0 }} />{/* spacer: matches score width */}
 
+          </div>
           </div>
 
         </div>
@@ -423,12 +424,12 @@ function RichText({ text }) {
 function ScorePotWithNumber({ score, maxScore }) {
   const [displayScore, setDisplayScore] = useState(score);
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
+      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, width: 100, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
-    </>
+    </div>
   );
 }
 

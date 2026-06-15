@@ -35,7 +35,7 @@ export default function FinalScreen() {
         color: '#f59e0b', margin: 0, textAlign: 'center',
         textShadow: '0 0 40px #f59e0b66',
       }}>
-        A Wonderful wife!
+        Een prachtige bruid!
       </p>
 
       {/* ── Picture ── */}

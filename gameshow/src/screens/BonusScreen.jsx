@@ -100,7 +100,7 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
     <div style={PAGE}>
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -119,7 +119,9 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
       </div>
 
       {/* ── Main content ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: 1600 }}>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
 
         {/* Row 1: spacer | question card | score pot */}
         <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
@@ -128,8 +130,8 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
           <div style={{ width: 180, flexShrink: 0 }} />
 
           {/* Question card */}
-          <div style={{ flex: 1 }}>
-            <div style={{
+          <div style={{ flex: 1, overflow: 'hidden' }}>
+          <div style={{
               width: '100%', background: 'linear-gradient(135deg,#0d1b3e,#101f4a)',
               border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
               boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
@@ -159,16 +161,19 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
           </div>
 
           {/* Score pot */}
-          <div style={{ width: 180, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
-              <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Score</div>
-              <ScorePotWithNumber score={score} maxScore={maxPossible} />
-            </div>
+          <div style={{
+            width: 180, flexShrink: 0,
+            display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
+            marginRight: -16,
+          }}>
+            <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+            <ScorePotWithNumber score={score} maxScore={maxPossible} />
           </div>
 
         </div>
 
         {/* Row 2: left spacer | answers + controls | right spacer */}
+        <div style={{ overflow: 'hidden' }}>
         <div style={{ display: 'flex', gap: 20 }}>
           <div style={{ width: 180, flexShrink: 0 }} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
@@ -203,11 +208,6 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
                 {phase === 'revealed'  && 'Press Enter to continue'}
               </span>
               <div style={{ flex: 1 }} />
-              {phase === 'revealed' && bonusWon !== null && (
-                <span style={{ fontWeight: 900, fontSize: '1.1rem', color: bonusWon ? '#4ade80' : '#f87171' }}>
-                  {bonusWon ? '🏆 Bonus won! Full pot of gold!' : '😞 Bonus missed!'}
-                </span>
-              )}
               {(phase === 'selected' || phase === 'timeout') && (
                 <ActionBtn onClick={doReveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
                   {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Antwoord tonen'}
@@ -226,7 +226,9 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
           </div>
           <div style={{ width: 180, flexShrink: 0 }} />
         </div>
+        </div>
 
+        </div>
       </div>
 
       {/* ── Timer bar ── */}
@@ -271,12 +273,12 @@ function RichText({ text }) {
 function ScorePotWithNumber({ score, maxScore }) {
   const [displayScore, setDisplayScore] = useState(score);
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1 }}>
+      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, width: 100, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -309,7 +311,7 @@ function ScorePot({ score, maxScore, onDisplay }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 }}>
-      <span style={{ fontSize: '1.6rem' }}>🪙</span>
+      <span style={{ fontSize: '1.6rem' }}>💰</span>
       <div style={{
         position: 'relative', width: 64, flex: 1, minHeight: 80,
         background: '#080e1a',

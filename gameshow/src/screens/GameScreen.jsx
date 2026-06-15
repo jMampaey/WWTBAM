@@ -463,7 +463,7 @@ function ScorePot({ score, maxScore, onDisplay }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 }}>
-      <span style={{ fontSize: '1.6rem' }}>🪙</span>
+      <span style={{ fontSize: '1.6rem' }}>💰</span>
 
       {/* Pot body */}
       <div style={{

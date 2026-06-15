@@ -66,11 +66,9 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
         transform: taglineVisible ? 'scale(1)' : 'scale(0)',
         transition: taglineVisible ? 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
       }}>
-        {hasBonus
-          ? "Let's try a bonus question to fill the pot o' gold!"
-          : isMillionaire
-            ? 'En wat wint deze milLEOnaire?'
-            : `${playerName}, what's in the pot o' gold..?`}
+        {!hasBonus && (isMillionaire
+          ? 'En wat wint deze milLEOnaire?'
+          : `${playerName}, what's in the pot o' gold..?`)}
       </p>
 
 

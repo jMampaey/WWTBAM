@@ -18,7 +18,7 @@ export default function GameScreen({
   phase, selected, timeLeft, timerOn, eliminated, lifelines, usedLifeline,
   revealedCount, videoStarted, slidePhase,
   phoneOpen, setPhoneOpen, familyOpen, setFamilyOpen,
-  selectOpt, reveal, next, do50, doPhone, doFamily,
+  selectOpt, reveal, next, goBack, do50, doPhone, doFamily,
 }) {
   if (!q) return null;
   const optLetters = ['A','B','C','D'].filter(l => q.options[l]);
@@ -253,7 +253,18 @@ export default function GameScreen({
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
-          <div style={{ width: 180, flexShrink: 0 }} />{/* left spacer: matches lifelines width */}
+          <div style={{ width: 180, flexShrink: 0, position: 'relative' }}>
+            {qIdx > 0 && (
+              <button onClick={goBack} style={{
+                position: 'absolute', bottom: ['selected','timeout','revealed'].includes(phase) ? 16 : 0, left: 0,
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                color: '#334155', fontSize: 13, fontFamily: "'Segoe UI',system-ui,sans-serif",
+                letterSpacing: '0.05em',
+              }}>
+                ← Terug
+              </button>
+            )}
+          </div>{/* left spacer: matches lifelines width */}
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
 
             {/* Answer grid */}

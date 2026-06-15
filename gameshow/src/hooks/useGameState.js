@@ -119,6 +119,12 @@ export function useGameState() {
         return;
       }
 
+      // ArrowLeft — go back one question to its revealed state
+      if (e.key === 'ArrowLeft' && qIdx > 0) {
+        _jumpTo(qIdx - 1, 'revealed');
+        return;
+      }
+
       // 1–0 — jump to question (dev shortcut)
       if (/^[0-9]$/.test(e.key)) {
         const idx = e.key === '0' ? 9 : parseInt(e.key) - 1;
@@ -191,12 +197,12 @@ export function useGameState() {
     }, 360);
   }
 
-  function _jumpTo(idx) {
+  function _jumpTo(idx, targetPhase) {
     clearTimeout(slideTimer.current);
     setQIdx(idx);
     setTimeLeft(questions[idx].timer);
-    setPhase(qPhase(questions[idx]));
-    setRevealedCount(0);
+    setPhase(targetPhase ?? qPhase(questions[idx]));
+    setRevealedCount(targetPhase === 'revealed' ? 4 : 0);
     setSelected(null);
     setEliminated([]);
     setPhoneOpen(false);
@@ -263,6 +269,7 @@ export function useGameState() {
     startGame, selectOpt,
     reveal: _reveal,
     next: _next,
+    goBack: () => qIdx > 0 && _jumpTo(qIdx - 1, 'revealed'),
     do50, doPhone, doFamily,
   };
 }

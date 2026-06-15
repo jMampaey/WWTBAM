@@ -18,7 +18,7 @@ export default function GameScreen({
   phase, selected, timeLeft, timerOn, eliminated, lifelines, usedLifeline,
   revealedCount, videoStarted, slidePhase,
   phoneOpen, setPhoneOpen, familyOpen, setFamilyOpen,
-  selectOpt, reveal, next, goBack, do50, doPhone, doFamily,
+  selectOpt, reveal, next, goBack, do50, doPhone, doFamily, setVideoStarted,
 }) {
   if (!q) return null;
   const optLetters = ['A','B','C','D'].filter(l => q.options[l]);
@@ -26,6 +26,8 @@ export default function GameScreen({
   const ptsAvail   = usedLifeline ? Math.floor(q.points / 2) : q.points;
   const maxScore   = questions.reduce((sum, qq) => sum + qq.points, 0);
   const videoRef        = useRef(null);
+  const answerVideoRef  = useRef(null);
+  const mediaContainerRef = useRef(null);
   const crossfadeTimer  = useRef(null);
   const [slideX,   setSlideX]   = useState('0%');
   const [slideTx,  setSlideTx]  = useState('none');
@@ -52,6 +54,39 @@ export default function GameScreen({
   useEffect(() => {
     if (videoStarted && videoRef.current) videoRef.current.play();
   }, [videoStarted]);
+
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      :fullscreen video { width: 100% !important; height: 100% !important; max-height: none !important; object-fit: contain !important; }
+      :-webkit-full-screen video { width: 100% !important; height: 100% !important; max-height: none !important; object-fit: contain !important; }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
+
+  useEffect(() => {
+    const handler = e => {
+      if (e.key === ' ' && document.fullscreenElement) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        document.exitFullscreen?.();
+        return;
+      }
+      if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.();
+        } else if (mediaContainerRef.current) {
+          mediaContainerRef.current.requestFullscreen?.();
+          const vid = answerVideoRef.current ?? videoRef.current;
+          if (vid) vid.play?.();
+          setVideoStarted(true);
+        }
+      }
+    };
+    window.addEventListener('keydown', handler, true);
+    return () => window.removeEventListener('keydown', handler, true);
+  }, []);
 
   useEffect(() => {
     clearTimeout(crossfadeTimer.current);
@@ -191,7 +226,7 @@ export default function GameScreen({
                   const img = showAnswer ? q.answerImage : q.image;
                   const vid = showAnswer ? q.answerVideo : q.video;
                   return (
-                    <div style={{ position: 'relative', marginBottom: 16 }}>
+                    <div ref={mediaContainerRef} style={{ position: 'relative', marginBottom: 16 }}>
                       {img && (
                         <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
                           width: '100%', height: 680, objectFit: 'contain',
@@ -209,11 +244,19 @@ export default function GameScreen({
                               }} allowFullScreen />
                           : <video
                               key={showAnswer ? 'answer' : 'question'}
-                              ref={showAnswer ? undefined : videoRef}
+                              ref={showAnswer ? answerVideoRef : videoRef}
                               src={vid} autoPlay={showAnswer} style={{
                                 width: '100%', maxHeight: 680, borderRadius: 10,
                                 display: 'block', background: '#000',
                               }} />
+                      )}
+                      {vid && !isYouTube(vid) && (
+                        <button onClick={() => mediaContainerRef.current?.requestFullscreen?.()} style={{
+                          position: 'absolute', bottom: 10, right: 10,
+                          background: 'rgba(0,0,0,0.6)', border: '1px solid #334155',
+                          borderRadius: 8, padding: '6px 10px', cursor: 'pointer',
+                          color: '#94a3b8', fontSize: 16,
+                        }}>⛶</button>
                       )}
                       {hasAnswerMedia && (
                         <div style={{

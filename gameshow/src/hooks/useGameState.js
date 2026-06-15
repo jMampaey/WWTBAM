@@ -265,7 +265,7 @@ export function useGameState() {
     score, scoreLog, timeLeft, timerOn, phoneOpen, familyOpen, eliminated, lifelines, usedLifeline,
     revealedCount,
     q, bonusQ, bonusAttempted, videoStarted, slidePhase,
-    setPlayerName, setPhoneOpen, setFamilyOpen, setScreen, setTimerOn, setScore, setBonusAttempted,
+    setPlayerName, setPhoneOpen, setFamilyOpen, setScreen, setTimerOn, setScore, setBonusAttempted, setVideoStarted,
     startGame, selectOpt,
     reveal: _reveal,
     next: _next,

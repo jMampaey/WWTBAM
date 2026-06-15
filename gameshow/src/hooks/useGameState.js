@@ -51,6 +51,7 @@ export function useGameState() {
   const [eliminated, setEliminated] = useState([]);
   const [lifelines, setLifelines] = useState({ fifty: true, phone: true, family: true });
   const [usedLifeline, setUsedLifeline] = useState(false);
+  const [scoredIdxs, setScoredIdxs] = useState(new Set());
   const [videoStarted, setVideoStarted] = useState(false);
   const [slidePhase, setSlidePhase] = useState(null);
   const timerRef  = useRef(null);
@@ -118,6 +119,13 @@ export function useGameState() {
         return;
       }
 
+      // 1–0 — jump to question (dev shortcut)
+      if (/^[0-9]$/.test(e.key)) {
+        const idx = e.key === '0' ? 9 : parseInt(e.key) - 1;
+        if (idx < questions.length) _jumpTo(idx);
+        return;
+      }
+
       // A/B/C/D — select answer (also allowed after time runs out)
       if (['A', 'B', 'C', 'D'].includes(k) && (phase === 'playing' || phase === 'timeout' || phase === 'selected')) {
         if (q?.options[k] && !eliminated.includes(k)) {
@@ -142,13 +150,17 @@ export function useGameState() {
   function _reveal() {
     if (phase !== 'selected' && phase !== 'timeout') return;
     const isRight = selected === q.correct;
-    const pts = isRight
+    const alreadyScored = scoredIdxs.has(qIdx);
+    const pts = isRight && !alreadyScored
       ? (usedLifeline ? Math.floor(q.points / 2) : q.points)
       : 0;
 
     setPhase('revealed');
     setTimerOn(false);
-    if (isRight) setScore(s => s + pts);
+    if (isRight && !alreadyScored) {
+      setScore(s => s + pts);
+      setScoredIdxs(s => new Set(s).add(qIdx));
+    }
     setScoreLog(l => [...l, {
       question: q.question,
       correct: isRight,
@@ -179,9 +191,25 @@ export function useGameState() {
     }, 360);
   }
 
+  function _jumpTo(idx) {
+    clearTimeout(slideTimer.current);
+    setQIdx(idx);
+    setTimeLeft(questions[idx].timer);
+    setPhase(qPhase(questions[idx]));
+    setRevealedCount(0);
+    setSelected(null);
+    setEliminated([]);
+    setPhoneOpen(false);
+    setFamilyOpen(false);
+    setUsedLifeline(false);
+    setTimerOn(false);
+    setVideoStarted(false);
+    setSlidePhase(null);
+  }
+
   // ── Public actions ─────────────────────────────────────────────────────────
   function startGame() {
-    setQIdx(0); setScore(0); setScoreLog([]); setBonusAttempted(false);
+    setQIdx(0); setScore(0); setScoreLog([]); setBonusAttempted(false); setScoredIdxs(new Set());
     setPhase(qPhase(questions[0])); setRevealedCount(0);
     setVideoStarted(false);
     setSelected(null); setEliminated([]);

@@ -14,15 +14,18 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   const isMillionaire = score >= maxPossible;
 
   const [displayScore, setDisplayScore] = useState(0);
+  const [taglineVisible, setTaglineVisible] = useState(false);
   const rafRef = useRef(null);
   useEffect(() => {
+    setTaglineVisible(false);
     const DURATION = 2000;
     const start = performance.now();
     const animate = now => {
       const t = Math.min(1, (now - start) / DURATION);
-      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const eased = 1 - Math.pow(1 - t, 3);
       setDisplayScore(Math.round(eased * score));
       if (t < 1) rafRef.current = requestAnimationFrame(animate);
+      else setTaglineVisible(true);
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
@@ -58,7 +61,11 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
       </div>
 
       {/* ── Tagline ── */}
-      <p style={{ fontSize: isMillionaire ? '2.2rem' : '1.5rem', fontWeight: 700, color: '#e2e8f0', margin: 0, textAlign: 'center' }}>
+      <p style={{
+        fontSize: isMillionaire ? '2.2rem' : '1.5rem', fontWeight: 700, color: '#e2e8f0', margin: 0, textAlign: 'center',
+        transform: taglineVisible ? 'scale(1)' : 'scale(0)',
+        transition: taglineVisible ? 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
+      }}>
         {hasBonus
           ? "Let's try a bonus question to fill the pot o' gold!"
           : isMillionaire

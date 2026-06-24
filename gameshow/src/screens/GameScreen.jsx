@@ -48,12 +48,21 @@ export default function GameScreen({
       setSlideX('0%');
     }
   }, [slidePhase]);
-  const [overlayOpacity, setOverlayOpacity] = useState(0);
-  const [mediaSwapped,   setMediaSwapped]   = useState(false);
+  const [overlayOpacity,      setOverlayOpacity]      = useState(0);
+  const [mediaSwapped,        setMediaSwapped]        = useState(false);
+  const [answerVideoStarted,  setAnswerVideoStarted]  = useState(false);
 
   useEffect(() => {
     if (videoStarted && videoRef.current) videoRef.current.play();
   }, [videoStarted]);
+
+  useEffect(() => {
+    if (answerVideoStarted && answerVideoRef.current) answerVideoRef.current.play();
+  }, [answerVideoStarted]);
+
+  useEffect(() => {
+    setAnswerVideoStarted(false);
+  }, [phase]);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -73,6 +82,12 @@ export default function GameScreen({
         document.exitFullscreen?.();
         return;
       }
+      if (e.key === ' ' && phase === 'revealed' && q?.answerVideo && !answerVideoStarted) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setAnswerVideoStarted(true);
+        return;
+      }
       if (e.key === 'f' || e.key === 'F') {
         if (document.fullscreenElement) {
           document.exitFullscreen?.();
@@ -80,13 +95,14 @@ export default function GameScreen({
           mediaContainerRef.current.requestFullscreen?.();
           const vid = answerVideoRef.current ?? videoRef.current;
           if (vid) vid.play?.();
-          setVideoStarted(true);
+          if (answerVideoRef.current) setAnswerVideoStarted(true);
+          else setVideoStarted(true);
         }
       }
     };
     window.addEventListener('keydown', handler, true);
     return () => window.removeEventListener('keydown', handler, true);
-  }, []);
+  }, [phase, q, answerVideoStarted]);
 
   useEffect(() => {
     clearTimeout(crossfadeTimer.current);
@@ -246,7 +262,7 @@ export default function GameScreen({
                           : <video
                               key={showAnswer ? 'answer' : 'question'}
                               ref={showAnswer ? answerVideoRef : videoRef}
-                              src={vid} autoPlay={showAnswer} style={{
+                              src={vid} autoPlay={showAnswer && answerVideoStarted} style={{
                                 width: '100%', height: '100%', borderRadius: 10,
                                 display: 'block', background: '#000',
                               }} />
@@ -332,7 +348,8 @@ export default function GameScreen({
                 {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
                 {phase === 'playing'                           && 'Press A B C D to select'}
                 {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
-                {phase === 'revealed'                          && 'Press Enter for next'}
+                {phase === 'revealed' && q.answerVideo && !answerVideoStarted && 'Space — play answer video'}
+                {phase === 'revealed' && (!q.answerVideo || answerVideoStarted) && 'Press Enter for next'}
               </span>
               <div style={{ flex: 1 }} />
               {(phase === 'selected' || phase === 'timeout') && (

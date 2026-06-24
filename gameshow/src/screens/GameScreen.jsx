@@ -199,10 +199,10 @@ export default function GameScreen({
       <div style={{ width: '100%', maxWidth: '92vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Center column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8vh', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8vh', flex: 1, minHeight: 0 }}>
 
           {/* Row 1: Lifelines + Question card + Score */}
-          <div style={{ display: 'flex', gap: '4vw', alignItems: 'stretch', flex: 1 }}>
+          <div style={{ display: 'flex', gap: '4vw', alignItems: 'stretch', flex: 1, minHeight: 0 }}>
 
             {/* Left: Lifelines */}
             <div style={{
@@ -287,7 +287,7 @@ export default function GameScreen({
                   );
                 })()}
 
-                <p style={{ fontSize: 'clamp(2.2rem,3.8vw,3.2rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                <p style={{ fontSize: 'clamp(1.8rem,2.8vw,2.6rem)', fontWeight: 600, lineHeight: 1.45, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                   <RichText text={q.question} />
                 </p>
               </div>
@@ -307,9 +307,9 @@ export default function GameScreen({
           </div>
 
           {/* Row 2: Left spacer + Answers + Right spacer */}
-          <div style={{ overflow: 'hidden' }}>
+          <div style={{ overflow: 'hidden', height: '22vh', flexShrink: 0 }}>
           <div style={{
-            display: 'flex', gap: '4vw',
+            display: 'flex', gap: '4vw', height: '100%',
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
@@ -325,10 +325,10 @@ export default function GameScreen({
               </button>
             )}
           </div>{/* left spacer: matches lifelines width */}
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, height: '100%' }}>
 
             {/* Answer grid */}
-            <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ width: '100%', height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr', gap: 12 }}>
               {optLetters.map((letter, i) => (
                 <OptionBtn
                   key={letter} letter={letter} text={q.options[letter]}
@@ -440,7 +440,7 @@ function LifelineBtn({ label, active, disabled, onClick, title }) {
         border: `2px solid ${active ? '#3b82f6' : '#1e293b'}`,
         color: active ? '#60a5fa' : '#334155',
         borderRadius: 10, padding: '22px 22px',
-        fontWeight: 800, fontSize: 26,
+        fontWeight: 800, fontSize: 32,
         cursor: (active && !disabled) ? 'pointer' : 'not-allowed',
         transition: 'all 0.2s',
       }}
@@ -473,7 +473,7 @@ function ScorePotWithNumber({ score, maxScore }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+      <div style={{ fontWeight: 900, fontSize: '2.6rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
     </div>

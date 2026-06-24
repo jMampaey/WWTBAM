@@ -32,21 +32,22 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
       style={{
         background: bg, border: `2px solid ${border}`, borderRadius: 14,
         padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 20,
+        height: '100%', boxSizing: 'border-box',
         opacity: (isElim || hidden) ? 0.15 : 1, cursor: canClick ? 'pointer' : 'default',
         transition: 'all 0.35s ease', userSelect: 'none',
         boxShadow: shadow || `0 0 10px ${border}28`,
       }}
     >
       <div style={{
-        width: 64, height: 64, borderRadius: '50%',
+        width: 56, height: 56, borderRadius: '50%',
         background: isElim ? '#1e293b' : border,
-        color: '#000', fontWeight: 'bold', fontSize: 28,
+        color: '#000', fontWeight: 'bold', fontSize: 26,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0, transition: 'background 0.35s',
       }}>
         {letter}
       </div>
-      <span style={{ color: textCol, fontSize: 34, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
+      <span style={{ color: textCol, fontSize: 36, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
         {isElim ? '\u00a0' : text}
       </span>
     </div>

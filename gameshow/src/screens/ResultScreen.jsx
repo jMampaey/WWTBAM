@@ -13,31 +13,39 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   const hasBonus     = bonusQ != null && score < maxPossible && !bonusAttempted;
   const isMillionaire = score >= maxPossible;
 
+  const [animationStarted, setAnimationStarted] = useState(false);
   const [displayScore, setDisplayScore] = useState(0);
   const [taglineVisible, setTaglineVisible] = useState(false);
   const rafRef = useRef(null);
+
   useEffect(() => {
+    if (!animationStarted) return;
     setTaglineVisible(false);
     const DURATION = 2000;
     const start = performance.now();
     const animate = now => {
       const t = Math.min(1, (now - start) / DURATION);
-      const eased = 1 - Math.pow(1 - t, 3);
+      const eased = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       setDisplayScore(Math.round(eased * score));
       if (t < 1) rafRef.current = requestAnimationFrame(animate);
       else setTaglineVisible(true);
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [score]);
+  }, [animationStarted, score]);
 
   useEffect(() => {
     const onKey = e => {
-      if (e.code === 'Space') setScreen(hasBonus ? 'bonus' : 'final');
+      if (e.code !== 'Space') return;
+      if (!animationStarted) {
+        setAnimationStarted(true);
+      } else if (taglineVisible) {
+        setScreen(hasBonus ? 'bonus' : 'final');
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [setScreen, hasBonus]);
+  }, [animationStarted, taglineVisible, setScreen, hasBonus]);
 
   return (
     <div style={PAGE}>
@@ -69,6 +77,12 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
         {!hasBonus && (isMillionaire
           ? 'En wat wint deze milLEOnaire?'
           : `${playerName}, what's in the pot o' gold..?`)}
+      </p>
+
+      {/* ── Hint ── */}
+      <p style={{ color: '#1e3a8a', fontSize: 15, margin: 0 }}>
+        {!animationStarted && 'Space — reveal score'}
+        {animationStarted && taglineVisible && 'Space — continue'}
       </p>
 
 

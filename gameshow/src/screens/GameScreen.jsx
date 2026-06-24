@@ -267,7 +267,7 @@ export default function GameScreen({
                                 display: 'block', background: '#000',
                               }} />
                       )}
-                      {vid && !isYouTube(vid) && (
+                      {(img || (vid && !isYouTube(vid))) && (
                         <button onClick={() => mediaContainerRef.current?.requestFullscreen?.()} style={{
                           position: 'absolute', bottom: 10, right: 10,
                           background: 'rgba(0,0,0,0.6)', border: '1px solid #334155',

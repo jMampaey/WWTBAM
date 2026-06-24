@@ -67,6 +67,26 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
     return () => clearInterval(timerRef.current);
   }, [timerOn]);
 
+  // Fullscreen (F key)
+  useEffect(() => {
+    const handler = e => {
+      if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) {
+          document.exitFullscreen?.();
+        } else if (mediaContainerRef.current) {
+          mediaContainerRef.current.requestFullscreen?.();
+        }
+      }
+      if (e.key === ' ' && document.fullscreenElement) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        document.exitFullscreen?.();
+      }
+    };
+    window.addEventListener('keydown', handler, true);
+    return () => window.removeEventListener('keydown', handler, true);
+  }, []);
+
   // Keyboard
   useEffect(() => {
     const handler = e => {
@@ -184,6 +204,14 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
                             width: '100%', height: '100%', borderRadius: 10,
                             display: 'block', background: '#000',
                           }} />
+                    )}
+                    {(img || (vid && !isYouTube(vid))) && (
+                      <button onClick={() => mediaContainerRef.current?.requestFullscreen?.()} style={{
+                        position: 'absolute', bottom: 10, right: 10,
+                        background: 'rgba(0,0,0,0.6)', border: '1px solid #334155',
+                        borderRadius: 8, padding: '6px 10px', cursor: 'pointer',
+                        color: '#94a3b8', fontSize: 16,
+                      }}>⛶</button>
                     )}
                     {hasAnswerMedia && (
                       <div style={{

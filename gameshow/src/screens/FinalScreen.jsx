@@ -40,7 +40,7 @@ export default function FinalScreen() {
 
       {/* ── Picture ── */}
       <img
-        src="/media/images/final.jpg"
+        src="/media/images/SriLanka.JPEG"
         alt=""
         style={{
           maxWidth: '100%', maxHeight: '60vh',

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import OptionBtn from '../components/OptionBtn';
+import FitText from '../components/FitText';
 
 
 const PAGE = {
@@ -177,7 +178,7 @@ export default function GameScreen({
       )}
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: '92vw', display: 'grid', gridTemplateColumns: '220px 1fr 140px', alignItems: 'center', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: '92vw', display: 'grid', gridTemplateColumns: '300px 1fr 140px', alignItems: 'center', gap: 20 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.9rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -206,7 +207,7 @@ export default function GameScreen({
 
             {/* Left: Lifelines */}
             <div style={{
-              width: 220, flexShrink: 0, alignSelf: 'center',
+              width: 300, flexShrink: 0, alignSelf: 'center',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
             }}>
               <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
@@ -287,9 +288,9 @@ export default function GameScreen({
                   );
                 })()}
 
-                <p style={{ fontSize: 'clamp(2.5rem,5vw,4.5rem)', fontWeight: 600, lineHeight: 1.4, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                <FitText maxSize={72} minSize={16} style={{ textAlign: 'center', fontWeight: 600, lineHeight: 1.4, color: '#f1f5f9', fontSize: 72 }}>
                   <RichText text={q.question} />
-                </p>
+                </FitText>
               </div>
             </div>
             </div>
@@ -312,7 +313,7 @@ export default function GameScreen({
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
-          <div style={{ width: 220, flexShrink: 0, position: 'relative' }}>
+          <div style={{ width: 300, flexShrink: 0, position: 'relative' }}>
             {qIdx > 0 && (
               <button onClick={goBack} style={{
                 position: 'absolute', bottom: ['selected','timeout','revealed'].includes(phase) ? 16 : 0, left: 0,
@@ -438,8 +439,8 @@ function LifelineBtn({ label, active, disabled, onClick, title }) {
         background: active ? '#0d1b3e' : '#080e1a',
         border: `2px solid ${active ? '#3b82f6' : '#1e293b'}`,
         color: active ? '#60a5fa' : '#334155',
-        borderRadius: 10, padding: '22px 22px',
-        fontWeight: 800, fontSize: 32,
+        borderRadius: 10, padding: '28px 28px', width: '100%',
+        fontWeight: 800, fontSize: 40,
         cursor: (active && !disabled) ? 'pointer' : 'not-allowed',
         transition: 'all 0.2s',
       }}

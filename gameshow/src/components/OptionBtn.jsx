@@ -1,3 +1,5 @@
+import FitText from './FitText';
+
 export default function OptionBtn({ letter, text, phase, selected, correct, eliminated, onClick, hidden }) {
   const isElim   = eliminated.includes(letter);
   const canClick = !isElim && !hidden && (phase === 'playing' || phase === 'timeout' || phase === 'selected');
@@ -32,7 +34,7 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
       style={{
         background: bg, border: `2px solid ${border}`, borderRadius: 14,
         padding: '22px 28px', display: 'flex', alignItems: 'center', gap: 20,
-        height: '100%', boxSizing: 'border-box',
+        height: '100%', boxSizing: 'border-box', overflow: 'hidden', minWidth: 0,
         opacity: (isElim || hidden) ? 0.15 : 1, cursor: canClick ? 'pointer' : 'default',
         transition: 'all 0.35s ease', userSelect: 'none',
         boxShadow: shadow || `0 0 10px ${border}28`,
@@ -47,9 +49,9 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
       }}>
         {letter}
       </div>
-      <span style={{ color: textCol, fontSize: 50, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
+      <FitText maxSize={50} minSize={12} style={{ color: textCol, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s', flex: 1 }}>
         {isElim ? '\u00a0' : text}
-      </span>
+      </FitText>
     </div>
   );
 }

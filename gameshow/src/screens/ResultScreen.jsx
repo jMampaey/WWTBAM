@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ScorePot } from '../components/ScorePot';
 
 const PAGE = {
   minHeight: '100vh',
@@ -109,17 +110,17 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }} />
 
       {/* ── Title ── */}
-      <div style={{ position: 'relative', width: '100%', height: 'clamp(2.2rem, 4.8vw, 3.6rem)' }}>
+      <div style={{ position: 'relative', width: '100%', height: 56 }}>
         {/* Intro text — fades out on animation start */}
         <h1 style={{
           position: 'absolute', inset: 0, margin: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900,
+          fontSize: 56, fontWeight: 900,
           color: '#e2e8f0', textAlign: 'center',
           opacity: animationStarted ? 0 : 1,
           filter: animationStarted ? 'blur(12px)' : 'blur(0px)',
           transition: 'opacity 2s ease-in-out, filter 2s ease-in-out',
-          pointerEvents: 'none',
+          pointerEvents: 'none', whiteSpace: 'nowrap',
         }}>
           Laten we naar je score kijken...
         </h1>
@@ -127,22 +128,23 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
         <h1 style={{
           position: 'absolute', inset: 0, margin: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900,
+          fontSize: 56, fontWeight: 900,
           background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           textAlign: 'center',
           opacity: animationStarted ? 1 : 0,
           filter: animationStarted ? 'blur(0px)' : 'blur(12px)',
           transition: 'opacity 2s ease-in-out, filter 2s ease-in-out',
+          whiteSpace: 'nowrap',
         }}>
           {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Who wants to be a milLEOnaire?'}
         </h1>
       </div>
 
       {/* ── Pot of gold ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: 240 }}>
-        <ScorePot score={displayScore} maxScore={maxPossible} />
-        <div style={{ fontWeight: 900, fontSize: '3.5rem', color: '#f59e0b', lineHeight: 1, width: '100%', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: 240, height: '30vh' }}>
+        <ScorePot score={displayScore} maxScore={maxPossible} noAnimation />
+        <div style={{ fontWeight: 900, fontSize: 50, color: '#f59e0b', lineHeight: 1, width: '100%', textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
           {displayScore.toLocaleString()}
         </div>
       </div>
@@ -168,48 +170,3 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   );
 }
 
-// ── ScorePot ─────────────────────────────────────────────────────────────────
-
-function ScorePot({ score, maxScore }) {
-  const pct = maxScore > 0 ? Math.min(1, score / maxScore) : 0;
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-      <span style={{ fontSize: '2rem' }}>🪙</span>
-
-      {/* Pot body */}
-      <div style={{
-        position: 'relative', width: 100, height: 300,
-        background: '#080e1a',
-        border: '2px solid #1e3a8a',
-        borderRadius: '14px 14px 48px 48px',
-        overflow: 'hidden',
-        boxShadow: 'inset 0 2px 10px #00000088, 0 0 20px #1e3a8a44',
-      }}>
-        {/* Gold fill */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          height: `${pct * 100}%`,
-          background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
-          boxShadow: '0 0 24px #f59e0b88',
-        }} />
-        {/* Gloss sheen */}
-        <div style={{
-          position: 'absolute', top: 0, left: '22%', width: '14%', bottom: 0,
-          background: 'linear-gradient(to bottom, transparent 10%, rgba(255,255,255,0.07) 50%, transparent 90%)',
-          pointerEvents: 'none',
-        }} />
-        {/* Tick marks */}
-        {[0.25, 0.5, 0.75].map(t => (
-          <div key={t} style={{
-            position: 'absolute', left: 4, right: 4,
-            bottom: `${t * 100}%`,
-            height: 1,
-            background: 'rgba(255,255,255,0.08)',
-          }} />
-        ))}
-      </div>
-
-    </div>
-  );
-}

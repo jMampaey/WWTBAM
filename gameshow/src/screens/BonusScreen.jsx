@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import OptionBtn from '../components/OptionBtn';
+import FitText from '../components/FitText';
+import { ScorePotWithNumber } from '../components/ScorePot';
 
 const PAGE = {
   height: '100vh',
@@ -23,8 +25,8 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
   const [timeLeft, setTimeLeft]          = useState(q.timer);
   const [timerOn, setTimerOn]            = useState(false);
   const [bonusWon, setBonusWon]          = useState(null);
-  const [overlayOpacity, setOverlayOpacity] = useState(0);
-  const [mediaSwapped,   setMediaSwapped]   = useState(false);
+  const [overlayOpacity,   setOverlayOpacity]   = useState(0);
+  const [mediaSwapped,     setMediaSwapped]     = useState(false);
   const timerRef        = useRef(null);
   const crossfadeTimer  = useRef(null);
   const mediaContainerRef = useRef(null);
@@ -223,19 +225,18 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
                   </div>
                 );
               })()}
-              <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+              <FitText maxSize={56} minSize={16} style={{ textAlign: 'center', fontWeight: 600, lineHeight: 1.4, color: '#f1f5f9', fontSize: 56 }}>
                 <RichText text={q.question} />
-              </p>
+              </FitText>
             </div>
           </div>
 
           {/* Score pot */}
           <div style={{
-            width: 180, flexShrink: 0,
+            width: 140, flexShrink: 0,
             display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
-            marginRight: -16,
           }}>
-            <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+            <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px', width: 140, textAlign: 'center' }}>Score</div>
             <ScorePotWithNumber score={score} maxScore={maxPossible} />
           </div>
 
@@ -267,30 +268,6 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
               ))}
             </div>
 
-            {/* Controls bar */}
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: 56 }}>
-              <span style={{ color: '#1e3a8a', fontSize: 15 }}>
-                {phase === 'revealing' && revealedCount < optLetters.length && 'Space — reveal next option'}
-                {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
-                {phase === 'playing'   && 'Press A B C D to select'}
-                {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
-                {phase === 'revealed'  && 'Press Enter to continue'}
-              </span>
-              <div style={{ flex: 1 }} />
-              {(phase === 'selected' || phase === 'timeout') && (
-                <ActionBtn onClick={doReveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
-                  {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Antwoord tonen'}
-                </ActionBtn>
-              )}
-              {phase === 'revealed' && (
-                <ActionBtn
-                  onClick={() => { setBonusAttempted(true); setScreen('result'); }}
-                  gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855"
-                >
-                  Verder →
-                </ActionBtn>
-              )}
-            </div>
 
           </div>
           <div style={{ width: 180, flexShrink: 0 }} />
@@ -339,79 +316,6 @@ function RichText({ text }) {
   });
 }
 
-function ScorePotWithNumber({ score, maxScore }) {
-  const [displayScore, setDisplayScore] = useState(score);
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
-      <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-        {displayScore.toLocaleString()}
-      </div>
-    </div>
-  );
-}
-
-function ScorePot({ score, maxScore, onDisplay }) {
-  const [displayScore, setDisplayScore] = useState(score);
-  const rafRef  = useRef(null);
-  const fromRef = useRef(score);
-
-  useEffect(() => {
-    const from = fromRef.current;
-    const to   = score;
-    if (from === to) return;
-    const DURATION = 1000;
-    const start = performance.now();
-    const animate = now => {
-      const t = Math.min(1, (now - start) / DURATION);
-      const eased = 1 - Math.pow(1 - t, 3);
-      const val = Math.round(from + (to - from) * eased);
-      setDisplayScore(val);
-      if (onDisplay) onDisplay(val);
-      if (t < 1) rafRef.current = requestAnimationFrame(animate);
-      else fromRef.current = to;
-    };
-    cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [score]);
-
-  const pct = maxScore > 0 ? Math.min(1, displayScore / maxScore) : 0;
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 }}>
-      <span style={{ fontSize: '1.6rem' }}>💰</span>
-      <div style={{
-        position: 'relative', width: 64, flex: 1, minHeight: 80,
-        background: '#080e1a',
-        border: '2px solid #1e3a8a',
-        borderRadius: '10px 10px 32px 32px',
-        overflow: 'hidden',
-        boxShadow: 'inset 0 2px 10px #00000088, 0 0 12px #1e3a8a44',
-      }}>
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          height: `${pct * 100}%`,
-          background: 'linear-gradient(to top, #78350f, #b45309, #f59e0b, #fde68a)',
-          boxShadow: '0 0 18px #f59e0b88',
-        }} />
-        <div style={{
-          position: 'absolute', top: 0, left: '22%', width: '14%', bottom: 0,
-          background: 'linear-gradient(to bottom, transparent 10%, rgba(255,255,255,0.07) 50%, transparent 90%)',
-          pointerEvents: 'none',
-        }} />
-        {[0.25, 0.5, 0.75].map(t => (
-          <div key={t} style={{
-            position: 'absolute', left: 4, right: 4,
-            bottom: `${t * 100}%`,
-            height: 1,
-            background: 'rgba(255,255,255,0.08)',
-          }} />
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function lerpColor(a, b, t) {
   const parse = hex => [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];

@@ -7,7 +7,7 @@ const PAGE = {
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  padding: '32px 24px 72px 24px',
+  padding: '20px 24px 72px 24px',
   boxSizing: 'border-box', gap: 32, overflow: 'hidden',
 };
 
@@ -179,19 +179,19 @@ export default function GameScreen({
       {/* ── Header ── */}
       <div style={{ width: '100%', maxWidth: '75vw', display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
         <div>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
-          <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
+          <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
+          <div style={{ fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.3 }}>{playerName}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <h2 style={{
-            fontSize: 'clamp(1.1rem,2.2vw,1.7rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
+            fontSize: 'clamp(1.4rem,2.8vw,2.2rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
             background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>Who wants to be a milLEOnaire?</h2>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Vraag</div>
-          <div style={{ fontWeight: 700, fontSize: '1.6rem' }}>{qIdx + 1} / {questions.length}</div>
+          <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Vraag</div>
+          <div style={{ fontWeight: 700, fontSize: '2rem' }}>{qIdx + 1} / {questions.length}</div>
         </div>
       </div>
 
@@ -199,7 +199,7 @@ export default function GameScreen({
       <div style={{ width: '100%', maxWidth: '75vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Center column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32, flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5vh', flex: 1 }}>
 
           {/* Row 1: Lifelines + Question card + Score */}
           <div style={{ display: 'flex', gap: '2vw', alignItems: 'stretch', flex: 1 }}>
@@ -209,7 +209,7 @@ export default function GameScreen({
               width: 180, flexShrink: 0, alignSelf: 'center',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
             }}>
-              <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+              <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
                 Hulplijnen
               </div>
               <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing' && phase !== 'timeout'} onClick={do50}
@@ -287,7 +287,7 @@ export default function GameScreen({
                   );
                 })()}
 
-                <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                <p style={{ fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                   <RichText text={q.question} />
                 </p>
               </div>
@@ -300,7 +300,7 @@ export default function GameScreen({
               display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
               marginRight: -16,
             }}>
-              <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+              <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
               <ScorePotWithNumber score={score} maxScore={maxScore} />
             </div>
 
@@ -325,7 +325,7 @@ export default function GameScreen({
               </button>
             )}
           </div>{/* left spacer: matches lifelines width */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5vh' }}>
 
             {/* Answer grid */}
             <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -340,8 +340,8 @@ export default function GameScreen({
             </div>
 
             {/* Controls bar */}
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: 56 }}>
-              <span style={{ color: '#1e3a8a', fontSize: 15 }}>
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: '6vh' }}>
+              <span style={{ color: '#1e3a8a', fontSize: 18 }}>
                 {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
                 {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
                 {phase === 'revealing' && revealedCount < optLetters.length  && 'Space — reveal next option'}
@@ -465,7 +465,7 @@ function LifelineBtn({ label, active, disabled, onClick, title }) {
         border: `2px solid ${active ? '#3b82f6' : '#1e293b'}`,
         color: active ? '#60a5fa' : '#334155',
         borderRadius: 10, padding: '14px 22px',
-        fontWeight: 800, fontSize: 17,
+        fontWeight: 800, fontSize: 22,
         cursor: (active && !disabled) ? 'pointer' : 'not-allowed',
         transition: 'all 0.2s',
       }}
@@ -578,7 +578,7 @@ function ActionBtn({ children, onClick, gradient, glow }) {
   return (
     <button onClick={onClick} style={{
       background: gradient, color: '#fff', border: 'none', borderRadius: 12,
-      padding: '16px 36px', fontSize: '1.2rem', fontWeight: 900,
+      padding: '16px 36px', fontSize: '1.6rem', fontWeight: 900,
       cursor: 'pointer', letterSpacing: '0.04em', boxShadow: `0 0 20px ${glow}`,
     }}>
       {children}

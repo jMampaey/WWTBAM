@@ -23,7 +23,30 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
   const [timeLeft, setTimeLeft]          = useState(q.timer);
   const [timerOn, setTimerOn]            = useState(false);
   const [bonusWon, setBonusWon]          = useState(null);
-  const timerRef = useRef(null);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [mediaSwapped,   setMediaSwapped]   = useState(false);
+  const timerRef        = useRef(null);
+  const crossfadeTimer  = useRef(null);
+  const mediaContainerRef = useRef(null);
+
+  useEffect(() => {
+    clearTimeout(crossfadeTimer.current);
+    if (phase === 'revealed' && (q?.answerImage || q?.answerVideo)) {
+      setMediaSwapped(false);
+      setOverlayOpacity(0);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setOverlayOpacity(1);
+        crossfadeTimer.current = setTimeout(() => {
+          setMediaSwapped(true);
+          requestAnimationFrame(() => requestAnimationFrame(() => setOverlayOpacity(0)));
+        }, 600);
+      }));
+    } else {
+      setMediaSwapped(false);
+      setOverlayOpacity(0);
+    }
+    return () => clearTimeout(crossfadeTimer.current);
+  }, [phase]);
 
   // Timer
   useEffect(() => {
@@ -138,27 +161,40 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
               height: '100%', boxSizing: 'border-box',
               display: 'flex', flexDirection: 'column',
             }}>
-              {(q.image || q.video) && (
-                <div style={{ height: '55vh', marginBottom: 16 }}>
-                  {q.image && (
-                    <img src={q.image} alt="" style={{
-                      width: '100%', height: '100%', objectFit: 'contain',
-                      background: '#000', borderRadius: 10, display: 'block',
-                    }} />
-                  )}
-                  {q.video && (
-                    isYouTube(q.video)
-                      ? <iframe src={q.video} title="question-video" style={{
-                          width: '100%', height: '100%', border: 'none',
-                          borderRadius: 10, display: 'block',
-                        }} allowFullScreen />
-                      : <video src={q.video} style={{
-                          width: '100%', height: '100%', borderRadius: 10,
-                          display: 'block', background: '#000',
-                        }} />
-                  )}
-                </div>
-              )}
+              {(q.image || q.video || q.answerImage || q.answerVideo) && (() => {
+                const hasAnswerMedia = q.answerImage || q.answerVideo;
+                const showAnswer = mediaSwapped && hasAnswerMedia;
+                const img = showAnswer ? q.answerImage : q.image;
+                const vid = showAnswer ? q.answerVideo : q.video;
+                return (
+                  <div ref={mediaContainerRef} style={{ position: 'relative', height: '55vh', marginBottom: 16 }}>
+                    {img && (
+                      <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
+                        width: '100%', height: '100%', objectFit: 'contain',
+                        background: '#000', borderRadius: 10, display: 'block',
+                      }} />
+                    )}
+                    {vid && (
+                      isYouTube(vid)
+                        ? <iframe key={showAnswer ? 'answer' : 'question'} src={vid} title="video" style={{
+                            width: '100%', height: '100%', border: 'none',
+                            borderRadius: 10, display: 'block',
+                          }} allowFullScreen />
+                        : <video key={showAnswer ? 'answer' : 'question'} src={vid} style={{
+                            width: '100%', height: '100%', borderRadius: 10,
+                            display: 'block', background: '#000',
+                          }} />
+                    )}
+                    {hasAnswerMedia && (
+                      <div style={{
+                        position: 'absolute', inset: 0, borderRadius: 10,
+                        background: '#000', pointerEvents: 'none',
+                        opacity: overlayOpacity, transition: 'opacity 0.5s ease',
+                      }} />
+                    )}
+                  </div>
+                );
+              })()}
               <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                 <RichText text={q.question} />
               </p>

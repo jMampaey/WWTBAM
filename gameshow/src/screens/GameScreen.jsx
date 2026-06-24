@@ -212,11 +212,11 @@ export default function GameScreen({
               <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
                 Hulplijnen
               </div>
-              <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing'} onClick={do50}
+              <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing' && phase !== 'timeout'} onClick={do50}
                 title="Remove 2 wrong answers — halves score for this question" />
-              <LifelineBtn label="👫 Friend" active={lifelines.phone} disabled={phase !== 'playing'} onClick={doPhone}
+              <LifelineBtn label="👫 Friend" active={lifelines.phone} disabled={phase !== 'playing' && phase !== 'timeout'} onClick={doPhone}
                 title="Pause timer, consult a friend — halves score for this question" />
-              <LifelineBtn label="👨‍👩‍👧 Family" active={lifelines.family} disabled={phase !== 'playing'} onClick={doFamily}
+              <LifelineBtn label="👨‍👩‍👧 Family" active={lifelines.family} disabled={phase !== 'playing' && phase !== 'timeout'} onClick={doFamily}
                 title="Pause timer, consult a family member — halves score for this question" />
 
             </div>

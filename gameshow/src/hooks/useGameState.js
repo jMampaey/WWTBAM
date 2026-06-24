@@ -135,8 +135,13 @@ export function useGameState() {
       // A/B/C/D — select answer (also allowed after time runs out)
       if (['A', 'B', 'C', 'D'].includes(k) && (phase === 'playing' || phase === 'timeout' || phase === 'selected')) {
         if (q?.options[k] && !eliminated.includes(k)) {
-          setSelected(k);
-          setPhase('selected');
+          if (selected === k && phase === 'selected') {
+            setSelected(null);
+            setPhase(timeLeft > 0 ? 'playing' : 'timeout');
+          } else {
+            setSelected(k);
+            setPhase('selected');
+          }
         }
       }
 
@@ -238,7 +243,7 @@ export function useGameState() {
   }
 
   function do50() {
-    if (!lifelines.fifty || phase !== 'playing' || !q) return;
+    if (!lifelines.fifty || (phase !== 'playing' && phase !== 'timeout') || !q) return;
     const wrong = Object.keys(q.options).filter(k => k !== q.correct);
     const elim = wrong.sort(() => 0.5 - Math.random()).slice(0, 2);
     setEliminated(elim);
@@ -247,14 +252,14 @@ export function useGameState() {
   }
 
   function doPhone() {
-    if (!lifelines.phone || phase !== 'playing') return;
+    if (!lifelines.phone || (phase !== 'playing' && phase !== 'timeout')) return;
     setPhoneOpen(true);
     setLifelines(l => ({ ...l, phone: false }));
     setUsedLifeline(true);
   }
 
   function doFamily() {
-    if (!lifelines.family || phase !== 'playing') return;
+    if (!lifelines.family || (phase !== 'playing' && phase !== 'timeout')) return;
     setFamilyOpen(true);
     setLifelines(l => ({ ...l, family: false }));
     setUsedLifeline(true);

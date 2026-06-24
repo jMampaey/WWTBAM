@@ -300,7 +300,7 @@ export default function GameScreen({
               display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
               marginRight: -16,
             }}>
-              <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+              <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px', width: 140, textAlign: 'center' }}>Score</div>
               <ScorePotWithNumber score={score} maxScore={maxScore} />
             </div>
 
@@ -471,9 +471,9 @@ function RichText({ text }) {
 function ScorePotWithNumber({ score, maxScore }) {
   const [displayScore, setDisplayScore] = useState(score);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, width: 140, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '2.6rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+      <div style={{ fontWeight: 900, fontSize: '2.6rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap', width: '100%' }}>
         {displayScore.toLocaleString()}
       </div>
     </div>

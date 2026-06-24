@@ -288,7 +288,7 @@ export default function GameScreen({
                   );
                 })()}
 
-                <FitText maxSize={72} minSize={16} style={{ textAlign: 'center', fontWeight: 600, lineHeight: 1.4, color: '#f1f5f9', fontSize: 72 }}>
+                <FitText maxSize={56} minSize={16} style={{ textAlign: 'center', fontWeight: 600, lineHeight: 1.4, color: '#f1f5f9', fontSize: 56 }}>
                   <RichText text={q.question} />
                 </FitText>
               </div>

@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import OptionBtn from '../components/OptionBtn';
 
 const PAGE = {
-  minHeight: '100vh',
+  height: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   padding: '32px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 32, overflowX: 'hidden',
+  boxSizing: 'border-box', gap: 32, overflow: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -100,7 +100,7 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
     <div style={PAGE}>
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: '75vw', display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -119,12 +119,12 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
       </div>
 
       {/* ── Main content ── */}
-      <div style={{ width: '100%', maxWidth: 1600 }}>
+      <div style={{ width: '100%', maxWidth: '75vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32, flex: 1 }}>
 
         {/* Row 1: spacer | question card | score pot */}
-        <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', gap: '2vw', alignItems: 'stretch', flex: 1 }}>
 
           {/* Left spacer (matches lifelines width) */}
           <div style={{ width: 180, flexShrink: 0 }} />
@@ -136,23 +136,28 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
               border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
               boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
               height: '100%', boxSizing: 'border-box',
+              display: 'flex', flexDirection: 'column',
             }}>
-              {q.image && (
-                <img src={q.image} alt="" style={{
-                  width: '100%', height: 680, objectFit: 'contain',
-                  background: '#000', borderRadius: 10, marginBottom: 16, display: 'block',
-                }} />
-              )}
-              {q.video && (
-                isYouTube(q.video)
-                  ? <iframe src={q.video} title="question-video" style={{
-                      width: '100%', height: 400, border: 'none',
-                      borderRadius: 10, marginBottom: 16, display: 'block',
-                    }} allowFullScreen />
-                  : <video src={q.video} style={{
-                      width: '100%', maxHeight: 400, borderRadius: 10,
-                      marginBottom: 16, display: 'block', background: '#000',
+              {(q.image || q.video) && (
+                <div style={{ height: '55vh', marginBottom: 16 }}>
+                  {q.image && (
+                    <img src={q.image} alt="" style={{
+                      width: '100%', height: '100%', objectFit: 'contain',
+                      background: '#000', borderRadius: 10, display: 'block',
                     }} />
+                  )}
+                  {q.video && (
+                    isYouTube(q.video)
+                      ? <iframe src={q.video} title="question-video" style={{
+                          width: '100%', height: '100%', border: 'none',
+                          borderRadius: 10, display: 'block',
+                        }} allowFullScreen />
+                      : <video src={q.video} style={{
+                          width: '100%', height: '100%', borderRadius: 10,
+                          display: 'block', background: '#000',
+                        }} />
+                  )}
+                </div>
               )}
               <p style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                 <RichText text={q.question} />
@@ -174,7 +179,7 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
 
         {/* Row 2: left spacer | answers + controls | right spacer */}
         <div style={{ overflow: 'hidden' }}>
-        <div style={{ display: 'flex', gap: 20 }}>
+        <div style={{ display: 'flex', gap: 40 }}>
           <div style={{ width: 180, flexShrink: 0 }} />
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 32 }}>
 
@@ -199,7 +204,7 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
             </div>
 
             {/* Controls bar */}
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: 56 }}>
               <span style={{ color: '#1e3a8a', fontSize: 15 }}>
                 {phase === 'revealing' && revealedCount < optLetters.length && 'Space — reveal next option'}
                 {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
@@ -275,7 +280,7 @@ function ScorePotWithNumber({ score, maxScore }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, width: 100, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
     </div>

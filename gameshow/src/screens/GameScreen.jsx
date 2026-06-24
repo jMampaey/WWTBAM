@@ -3,12 +3,12 @@ import OptionBtn from '../components/OptionBtn';
 
 
 const PAGE = {
-  minHeight: '100vh',
+  height: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   padding: '32px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 32, overflowX: 'hidden',
+  boxSizing: 'border-box', gap: 32, overflow: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -161,7 +161,7 @@ export default function GameScreen({
       )}
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: 1600, display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: '75vw', display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
         <div>
           <div style={{ color: '#334155', fontSize: 13, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
           <div style={{ fontWeight: 700, fontSize: '1.1rem', lineHeight: 1.3 }}>{playerName}</div>
@@ -180,13 +180,13 @@ export default function GameScreen({
       </div>
 
       {/* ── Middle ── */}
-      <div style={{ width: '100%', maxWidth: 1600 }}>
+      <div style={{ width: '100%', maxWidth: '75vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Center column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 32, flex: 1 }}>
 
           {/* Row 1: Lifelines + Question card + Score */}
-          <div style={{ display: 'flex', gap: 20, alignItems: 'stretch' }}>
+          <div style={{ display: 'flex', gap: '2vw', alignItems: 'stretch', flex: 1 }}>
 
             {/* Left: Lifelines */}
             <div style={{
@@ -217,6 +217,7 @@ export default function GameScreen({
                 border: '2px solid #1e3a8a', borderRadius: 18, padding: '26px 30px',
                 boxShadow: '0 0 40px #1e3a8a30, inset 0 1px 0 #2563eb18',
                 height: '100%', boxSizing: 'border-box',
+                display: 'flex', flexDirection: 'column',
               }}>
 
                 {/* Media container — crossfades question → answer via black overlay */}
@@ -226,10 +227,10 @@ export default function GameScreen({
                   const img = showAnswer ? q.answerImage : q.image;
                   const vid = showAnswer ? q.answerVideo : q.video;
                   return (
-                    <div ref={mediaContainerRef} style={{ position: 'relative', marginBottom: 16 }}>
+                    <div ref={mediaContainerRef} style={{ position: 'relative', marginBottom: 16, height: '55vh' }}>
                       {img && (
                         <img key={showAnswer ? 'answer' : 'question'} src={img} alt="" style={{
-                          width: '100%', height: 680, objectFit: 'contain',
+                          width: '100%', height: '100%', objectFit: 'contain',
                           background: '#000', borderRadius: 10, display: 'block',
                         }} />
                       )}
@@ -239,14 +240,14 @@ export default function GameScreen({
                               key={showAnswer ? 'answer' : 'question'}
                               src={showAnswer ? vid + (vid.includes('?') ? '&' : '?') + 'autoplay=1' : vid}
                               title="video" allow="autoplay" style={{
-                                width: '100%', height: 400, border: 'none',
+                                width: '100%', height: '100%', border: 'none',
                                 borderRadius: 10, display: 'block',
                               }} allowFullScreen />
                           : <video
                               key={showAnswer ? 'answer' : 'question'}
                               ref={showAnswer ? answerVideoRef : videoRef}
                               src={vid} autoPlay={showAnswer} style={{
-                                width: '100%', maxHeight: 680, borderRadius: 10,
+                                width: '100%', height: '100%', borderRadius: 10,
                                 display: 'block', background: '#000',
                               }} />
                       )}
@@ -292,7 +293,7 @@ export default function GameScreen({
           {/* Row 2: Left spacer + Answers + Right spacer */}
           <div style={{ overflow: 'hidden' }}>
           <div style={{
-            display: 'flex', gap: 20,
+            display: 'flex', gap: '2vw',
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
@@ -323,7 +324,7 @@ export default function GameScreen({
             </div>
 
             {/* Controls bar */}
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: 56 }}>
               <span style={{ color: '#1e3a8a', fontSize: 15 }}>
                 {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
                 {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
@@ -480,7 +481,7 @@ function ScorePotWithNumber({ score, maxScore }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, width: 100, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
     </div>

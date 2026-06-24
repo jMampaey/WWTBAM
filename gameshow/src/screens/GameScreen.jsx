@@ -7,7 +7,7 @@ const PAGE = {
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  padding: '20px 24px 72px 24px',
+  padding: '12px 24px 72px 24px',
   boxSizing: 'border-box', gap: 32, overflow: 'hidden',
 };
 
@@ -177,39 +177,39 @@ export default function GameScreen({
       )}
 
       {/* ── Header ── */}
-      <div style={{ width: '100%', maxWidth: '75vw', display: 'grid', gridTemplateColumns: '180px 1fr 180px', alignItems: 'center', gap: 20 }}>
+      <div style={{ width: '100%', maxWidth: '92vw', display: 'grid', gridTemplateColumns: '220px 1fr 140px', alignItems: 'center', gap: 20 }}>
         <div>
-          <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
-          <div style={{ fontWeight: 700, fontSize: '1.5rem', lineHeight: 1.3 }}>{playerName}</div>
+          <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Speler</div>
+          <div style={{ fontWeight: 700, fontSize: '1.9rem', lineHeight: 1.3 }}>{playerName}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
           <h2 style={{
-            fontSize: 'clamp(1.4rem,2.8vw,2.2rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
+            fontSize: 'clamp(1.8rem,3.2vw,2.8rem)', fontWeight: 900, margin: 0, whiteSpace: 'nowrap',
             background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>Who wants to be a milLEOnaire?</h2>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Vraag</div>
-          <div style={{ fontWeight: 700, fontSize: '2rem' }}>{qIdx + 1} / {questions.length}</div>
+          <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px' }}>Vraag</div>
+          <div style={{ fontWeight: 700, fontSize: '2.4rem' }}>{qIdx + 1} / {questions.length}</div>
         </div>
       </div>
 
       {/* ── Middle ── */}
-      <div style={{ width: '100%', maxWidth: '75vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ width: '100%', maxWidth: '92vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Center column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5vh', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8vh', flex: 1 }}>
 
           {/* Row 1: Lifelines + Question card + Score */}
-          <div style={{ display: 'flex', gap: '2vw', alignItems: 'stretch', flex: 1 }}>
+          <div style={{ display: 'flex', gap: '4vw', alignItems: 'stretch', flex: 1 }}>
 
             {/* Left: Lifelines */}
             <div style={{
-              width: 180, flexShrink: 0, alignSelf: 'center',
+              width: 220, flexShrink: 0, alignSelf: 'center',
               display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
             }}>
-              <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
+              <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px' }}>
                 Hulplijnen
               </div>
               <LifelineBtn label="50 : 50" active={lifelines.fifty} disabled={phase !== 'playing' && phase !== 'timeout'} onClick={do50}
@@ -287,7 +287,7 @@ export default function GameScreen({
                   );
                 })()}
 
-                <p style={{ fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                <p style={{ fontSize: 'clamp(2.2rem,3.8vw,3.2rem)', fontWeight: 600, lineHeight: 1.55, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                   <RichText text={q.question} />
                 </p>
               </div>
@@ -296,11 +296,11 @@ export default function GameScreen({
 
             {/* Score (static, no slide) */}
             <div style={{
-              width: 180, flexShrink: 0,
+              width: 140, flexShrink: 0,
               display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
               marginRight: -16,
             }}>
-              <div style={{ color: '#334155', fontSize: 16, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
+              <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px', width: 100, textAlign: 'center' }}>Score</div>
               <ScorePotWithNumber score={score} maxScore={maxScore} />
             </div>
 
@@ -309,23 +309,23 @@ export default function GameScreen({
           {/* Row 2: Left spacer + Answers + Right spacer */}
           <div style={{ overflow: 'hidden' }}>
           <div style={{
-            display: 'flex', gap: '2vw',
+            display: 'flex', gap: '4vw',
             transform: `translateX(${slideX})`,
             transition: slideTx,
           }}>
-          <div style={{ width: 180, flexShrink: 0, position: 'relative' }}>
+          <div style={{ width: 220, flexShrink: 0, position: 'relative' }}>
             {qIdx > 0 && (
               <button onClick={goBack} style={{
                 position: 'absolute', bottom: ['selected','timeout','revealed'].includes(phase) ? 16 : 0, left: 0,
                 background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                color: '#334155', fontSize: 13, fontFamily: "'Segoe UI',system-ui,sans-serif",
+                color: '#334155', fontSize: 18, fontFamily: "'Segoe UI',system-ui,sans-serif",
                 letterSpacing: '0.05em',
               }}>
                 ← Terug
               </button>
             )}
           </div>{/* left spacer: matches lifelines width */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5vh' }}>
+          <div style={{ flex: 1 }}>
 
             {/* Answer grid */}
             <div style={{ width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -339,33 +339,8 @@ export default function GameScreen({
               ))}
             </div>
 
-            {/* Controls bar */}
-            <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 10, minHeight: '6vh' }}>
-              <span style={{ color: '#1e3a8a', fontSize: 18 }}>
-                {phase === 'prereveal' && !videoStarted                      && 'Space — play video'}
-                {phase === 'prereveal' && videoStarted                       && 'Space — show answers'}
-                {phase === 'revealing' && revealedCount < optLetters.length  && 'Space — reveal next option'}
-                {phase === 'revealing' && revealedCount >= optLetters.length && 'Space — start timer'}
-                {phase === 'playing'                           && 'Press A B C D to select'}
-                {(phase === 'selected' || phase === 'timeout') && 'Press Enter to reveal'}
-                {phase === 'revealed' && q.answerVideo && !answerVideoStarted && 'Space — play answer video'}
-                {phase === 'revealed' && (!q.answerVideo || answerVideoStarted) && 'Press Enter for next'}
-              </span>
-              <div style={{ flex: 1 }} />
-              {(phase === 'selected' || phase === 'timeout') && (
-                <ActionBtn onClick={reveal} gradient="linear-gradient(135deg,#1d4ed8,#7c3aed)" glow="#2563eb55">
-                  {phase === 'timeout' ? "⏱ Time's Up — Reveal" : '🎯 Antwoord tonen'}
-                </ActionBtn>
-              )}
-              {phase === 'revealed' && (
-                <ActionBtn onClick={next} gradient="linear-gradient(135deg,#059669,#2563eb)" glow="#05996855">
-                  {isLast ? '🏁 Final Results' : 'Verder →'}
-                </ActionBtn>
-              )}
-            </div>
-
           </div>
-          <div style={{ width: 180, flexShrink: 0 }} />{/* spacer: matches score width */}
+          <div style={{ width: 140, flexShrink: 0 }} />{/* spacer: matches score width */}
 
           </div>
           </div>
@@ -444,7 +419,7 @@ function TimerBar({ timeLeft, total, timerOn, qIdx }) {
       <span style={{
         position: 'relative', zIndex: 1,
         width: '100%', textAlign: 'center',
-        fontWeight: 900, fontSize: 22, letterSpacing: '0.05em',
+        fontWeight: 900, fontSize: 28, letterSpacing: '0.05em',
         color: '#fff', fontFamily: "'Segoe UI',system-ui,sans-serif",
         textShadow: '0 1px 4px #000a',
       }}>
@@ -464,8 +439,8 @@ function LifelineBtn({ label, active, disabled, onClick, title }) {
         background: active ? '#0d1b3e' : '#080e1a',
         border: `2px solid ${active ? '#3b82f6' : '#1e293b'}`,
         color: active ? '#60a5fa' : '#334155',
-        borderRadius: 10, padding: '14px 22px',
-        fontWeight: 800, fontSize: 22,
+        borderRadius: 10, padding: '22px 22px',
+        fontWeight: 800, fontSize: 26,
         cursor: (active && !disabled) ? 'pointer' : 'not-allowed',
         transition: 'all 0.2s',
       }}
@@ -498,7 +473,7 @@ function ScorePotWithNumber({ score, maxScore }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, flex: 1 }}>
       <ScorePot score={score} maxScore={maxScore} onDisplay={setDisplayScore} />
-      <div style={{ fontWeight: 900, fontSize: '1.4rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+      <div style={{ fontWeight: 900, fontSize: '1.8rem', color: '#f59e0b', lineHeight: 1, textAlign: 'center', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
         {displayScore.toLocaleString()}
       </div>
     </div>

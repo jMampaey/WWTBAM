@@ -16,7 +16,64 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   const [animationStarted, setAnimationStarted] = useState(false);
   const [displayScore, setDisplayScore] = useState(0);
   const [taglineVisible, setTaglineVisible] = useState(false);
-  const rafRef = useRef(null);
+  const rafRef    = useRef(null);
+  const canvasRef = useRef(null);
+  const confettiRef = useRef(null);
+
+  // Confetti burst when tagline appears
+  useEffect(() => {
+    if (!taglineVisible || !isMillionaire) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const COLORS = ['#60a5fa','#a78bfa','#f472b6','#f59e0b','#34d399','#fde68a','#fff'];
+    const particles = Array.from({ length: 160 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5 - canvas.height * 0.1,
+      vx: (Math.random() - 0.5) * 6,
+      vy: Math.random() * -8 - 4,
+      size: Math.random() * 10 + 4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.15,
+      shape: Math.random() < 0.5 ? 'rect' : 'circle',
+      opacity: 1,
+    }));
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      particles.forEach(p => {
+        p.vy += 0.25; // gravity
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.rotation += p.rotSpeed;
+        p.opacity = Math.max(0, p.opacity - 0.008);
+        if (p.opacity > 0) alive = true;
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle   = p.color;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+      if (alive) confettiRef.current = requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
+
+    cancelAnimationFrame(confettiRef.current);
+    confettiRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(confettiRef.current);
+  }, [taglineVisible]);
 
   useEffect(() => {
     if (!animationStarted) return;
@@ -48,17 +105,39 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
   }, [animationStarted, taglineVisible, setScreen, hasBonus]);
 
   return (
-    <div style={PAGE}>
+    <div style={{ ...PAGE, position: 'relative', overflow: 'hidden' }}>
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }} />
 
       {/* ── Title ── */}
-      <h1 style={{
-        fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900, margin: 0,
-        background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
-        WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-        textAlign: 'center',
-      }}>
-        {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Who wants to be a milLEOnaire?'}
-      </h1>
+      <div style={{ position: 'relative', width: '100%', height: 'clamp(2.2rem, 4.8vw, 3.6rem)' }}>
+        {/* Intro text — fades out on animation start */}
+        <h1 style={{
+          position: 'absolute', inset: 0, margin: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900,
+          color: '#e2e8f0', textAlign: 'center',
+          opacity: animationStarted ? 0 : 1,
+          filter: animationStarted ? 'blur(12px)' : 'blur(0px)',
+          transition: 'opacity 2s ease-in-out, filter 2s ease-in-out',
+          pointerEvents: 'none',
+        }}>
+          Laten we naar je score kijken...
+        </h1>
+        {/* Real title — fades in on animation start */}
+        <h1 style={{
+          position: 'absolute', inset: 0, margin: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 'clamp(1.8rem,4vw,3rem)', fontWeight: 900,
+          background: 'linear-gradient(135deg,#60a5fa,#a78bfa,#f472b6)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          textAlign: 'center',
+          opacity: animationStarted ? 1 : 0,
+          filter: animationStarted ? 'blur(0px)' : 'blur(12px)',
+          transition: 'opacity 2s ease-in-out, filter 2s ease-in-out',
+        }}>
+          {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Who wants to be a milLEOnaire?'}
+        </h1>
+      </div>
 
       {/* ── Pot of gold ── */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: 240 }}>
@@ -80,9 +159,8 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
       </p>
 
       {/* ── Hint ── */}
-      <p style={{ color: '#1e3a8a', fontSize: 15, margin: 0 }}>
-        {!animationStarted && 'Space — reveal score'}
-        {animationStarted && taglineVisible && 'Space — continue'}
+      <p style={{ color: '#1e3a8a', fontSize: 15, margin: 0, opacity: (animationStarted && !taglineVisible) ? 0 : 1, transition: 'opacity 0.3s ease' }}>
+        {!animationStarted ? 'Space — reveal score' : 'Space — continue'}
       </p>
 
 

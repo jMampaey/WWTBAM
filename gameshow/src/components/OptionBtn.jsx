@@ -47,7 +47,7 @@ export default function OptionBtn({ letter, text, phase, selected, correct, elim
       }}>
         {letter}
       </div>
-      <span style={{ color: textCol, fontSize: 36, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
+      <span style={{ color: textCol, fontSize: 50, fontWeight: 500, lineHeight: 1.3, transition: 'color 0.35s' }}>
         {isElim ? '\u00a0' : text}
       </span>
     </div>

@@ -7,8 +7,8 @@ const PAGE = {
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
   color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
-  padding: '12px 24px 72px 24px',
-  boxSizing: 'border-box', gap: 32, overflow: 'hidden',
+  padding: '12px 24px calc(52px + 1vh) 24px',
+  boxSizing: 'border-box', gap: 12, overflow: 'hidden',
 };
 
 const isYouTube = url => /youtu\.?be/.test(url);
@@ -199,7 +199,7 @@ export default function GameScreen({
       <div style={{ width: '100%', maxWidth: '92vw', flex: 1, display: 'flex', flexDirection: 'column' }}>
 
         {/* Center column */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8vh', flex: 1, minHeight: 0 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1vh', flex: 1, minHeight: 0 }}>
 
           {/* Row 1: Lifelines + Question card + Score */}
           <div style={{ display: 'flex', gap: '4vw', alignItems: 'stretch', flex: 1, minHeight: 0 }}>
@@ -287,7 +287,7 @@ export default function GameScreen({
                   );
                 })()}
 
-                <p style={{ fontSize: 'clamp(1.8rem,2.8vw,2.6rem)', fontWeight: 600, lineHeight: 1.45, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
+                <p style={{ fontSize: 'clamp(2.5rem,5vw,4.5rem)', fontWeight: 600, lineHeight: 1.4, margin: 0, color: '#f1f5f9', textAlign: 'center' }}>
                   <RichText text={q.question} />
                 </p>
               </div>
@@ -298,7 +298,6 @@ export default function GameScreen({
             <div style={{
               width: 140, flexShrink: 0,
               display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 10,
-              marginRight: -16,
             }}>
               <div style={{ color: '#334155', fontSize: 20, textTransform: 'uppercase', letterSpacing: '1.5px', width: 140, textAlign: 'center' }}>Score</div>
               <ScorePotWithNumber score={score} maxScore={maxScore} />
@@ -307,7 +306,7 @@ export default function GameScreen({
           </div>
 
           {/* Row 2: Left spacer + Answers + Right spacer */}
-          <div style={{ overflow: 'hidden', height: '22vh', flexShrink: 0 }}>
+          <div style={{ overflow: 'hidden', height: '20vh', flexShrink: 0, width: '100%' }}>
           <div style={{
             display: 'flex', gap: '4vw', height: '100%',
             transform: `translateX(${slideX})`,

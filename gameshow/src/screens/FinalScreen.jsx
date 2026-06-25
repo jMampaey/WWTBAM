@@ -21,7 +21,7 @@ export default function FinalScreen() {
 
       {/* ── Answer text ── */}
       <p style={{
-        fontSize: 'clamp(1.8rem,4vw,2.8rem)', fontWeight: 900,
+        fontSize: 56, fontWeight: 900,
         color: '#f59e0b', margin: 0, textAlign: 'center',
         textShadow: '0 0 40px #f59e0b66',
       }}>

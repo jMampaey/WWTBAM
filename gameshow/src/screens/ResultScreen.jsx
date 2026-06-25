@@ -4,7 +4,7 @@ import { ScorePot } from '../components/ScorePot';
 const PAGE = {
   minHeight: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
-  color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
+  color: '#e2e8f0', fontFamily: "'Montserrat',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
   padding: '40px 24px 48px', boxSizing: 'border-box', gap: 40,
 };
@@ -137,7 +137,7 @@ export default function ResultScreen({ playerName, score, scoreLog, bonusQ, bonu
           transition: 'opacity 2s ease-in-out, filter 2s ease-in-out',
           whiteSpace: 'nowrap',
         }}>
-          {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Who wants to be a milLEOnaire?'}
+          {isMillionaire ? `${playerName} is now a milLEOnaire!` : 'Oei... Dat is niet voldoende'}
         </h1>
       </div>
 

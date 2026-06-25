@@ -6,7 +6,7 @@ import { ScorePotWithNumber } from '../components/ScorePot';
 const PAGE = {
   height: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
-  color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
+  color: '#e2e8f0', fontFamily: "'Montserrat',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   padding: '32px 24px 72px 24px',
   boxSizing: 'border-box', gap: 32, overflow: 'hidden',
@@ -68,6 +68,11 @@ export default function BonusScreen({ bonusQ, scoreLog, score, playerName, setSc
     }
     return () => clearInterval(timerRef.current);
   }, [timerOn]);
+
+  useEffect(() => {
+    document.body.style.cursor = 'none';
+    return () => { document.body.style.cursor = ''; };
+  }, []);
 
   // Fullscreen (F key)
   useEffect(() => {
@@ -375,7 +380,7 @@ function TimerBar({ timeLeft, total, timerOn }) {
       <span style={{
         position: 'relative', zIndex: 1, width: '100%', textAlign: 'center',
         fontWeight: 900, fontSize: 22, letterSpacing: '0.05em',
-        color: '#fff', fontFamily: "'Segoe UI',system-ui,sans-serif",
+        color: '#fff', fontFamily: "'Montserrat',system-ui,sans-serif",
         textShadow: '0 1px 4px #000a',
       }}>
         {timeLeft}s

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 const PAGE = {
   minHeight: '100vh', position: 'relative', overflow: 'hidden',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
-  color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
+  color: '#e2e8f0', fontFamily: "'Montserrat',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   justifyContent: 'center', padding: 24, boxSizing: 'border-box', gap: 16,
 };
@@ -168,7 +168,7 @@ export default function SetupScreen({ questions, startGame }) {
             cursor: 'pointer', letterSpacing: '0.06em',
             animation: 'btnGlow 2.5s ease-in-out infinite',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease',
-            fontFamily: "'Segoe UI',system-ui,sans-serif",
+            fontFamily: "'Montserrat',system-ui,sans-serif",
           }}>
             ▶ Start
           </button>

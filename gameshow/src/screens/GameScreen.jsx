@@ -7,7 +7,7 @@ import { ScorePotWithNumber } from '../components/ScorePot';
 const PAGE = {
   height: '100vh',
   background: 'radial-gradient(ellipse at center,#0d1b3e 0%,#050514 70%)',
-  color: '#e2e8f0', fontFamily: "'Segoe UI',system-ui,sans-serif",
+  color: '#e2e8f0', fontFamily: "'Montserrat',system-ui,sans-serif",
   display: 'flex', flexDirection: 'column', alignItems: 'center',
   padding: '12px 24px calc(52px + 1vh) 24px',
   boxSizing: 'border-box', gap: 12, overflow: 'hidden',
@@ -65,6 +65,11 @@ export default function GameScreen({
   useEffect(() => {
     setAnswerVideoStarted(false);
   }, [phase]);
+
+  useEffect(() => {
+    document.body.style.cursor = 'none';
+    return () => { document.body.style.cursor = ''; };
+  }, []);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -319,7 +324,7 @@ export default function GameScreen({
               <button onClick={goBack} style={{
                 position: 'absolute', bottom: ['selected','timeout','revealed'].includes(phase) ? 16 : 0, left: 0,
                 background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                color: '#334155', fontSize: 18, fontFamily: "'Segoe UI',system-ui,sans-serif",
+                color: '#334155', fontSize: 18, fontFamily: "'Montserrat',system-ui,sans-serif",
                 letterSpacing: '0.05em',
               }}>
                 ← Terug
@@ -421,7 +426,7 @@ function TimerBar({ timeLeft, total, timerOn, qIdx }) {
         position: 'relative', zIndex: 1,
         width: '100%', textAlign: 'center',
         fontWeight: 900, fontSize: 28, letterSpacing: '0.05em',
-        color: '#fff', fontFamily: "'Segoe UI',system-ui,sans-serif",
+        color: '#fff', fontFamily: "'Montserrat',system-ui,sans-serif",
         textShadow: '0 1px 4px #000a',
       }}>
         {timeLeft}s
